@@ -21,41 +21,47 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * 
+ * PATCH body for updating an end-user. Every field is tri-state: omit the key entirely to leave the field unchanged, send a non-null value to set it, or send JSON null to clear it.
  *
- * @param name 
- * @param phone 
- * @param avatarUrl 
- * @param locale 
- * @param address 
- * @param dateOfBirth 
+ * @param name New display name. Send null to clear; omit to leave unchanged.
+ * @param phone New phone number. Send null to clear; omit to leave unchanged.
+ * @param avatarUrl New avatar URL. Send null to clear; omit to leave unchanged.
+ * @param locale New preferred locale. Send null to clear; omit to leave unchanged.
+ * @param address New postal address. Send null to clear; omit to leave unchanged.
+ * @param dateOfBirth New date of birth (YYYY-MM-DD). Send null to clear; omit to leave unchanged.
  */
 @Serializable
 
 data class UpdateUserRequest (
 
+    /* New display name. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "name")
     val name: kotlin.String? = null,
 
+    /* New phone number. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "phone")
     val phone: kotlin.String? = null,
 
+    /* New avatar URL. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "avatarUrl")
     val avatarUrl: kotlin.String? = null,
 
+    /* New preferred locale. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "locale")
     val locale: UpdateUserRequest.Locale? = null,
 
+    /* New postal address. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "address")
     val address: kotlin.String? = null,
 
+    /* New date of birth (YYYY-MM-DD). Send null to clear; omit to leave unchanged. */
     @Contextual @SerialName(value = "dateOfBirth")
     val dateOfBirth: java.time.LocalDate? = null
 
 ) {
 
     /**
-     * 
+     * New preferred locale. Send null to clear; omit to leave unchanged.
      *
      * Values: EN,DA
      */

@@ -21,6 +21,7 @@ import okhttp3.HttpUrl
 
 import so.torii.backend.generated.model.CreateUserRequest
 import so.torii.backend.generated.model.CursorPageResponseUserResponse
+import so.torii.backend.generated.model.ProblemDetail
 import so.torii.backend.generated.model.ServerUserSearchRequest
 import so.torii.backend.generated.model.UpdateUserRequest
 import so.torii.backend.generated.model.UserResponse
@@ -48,14 +49,14 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:54529")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:56602")
         }
     }
 
     /**
      * Ban user
-     * 
-     * @param userId 
+     * Marks the user as banned and revokes all their active sessions.
+     * @param userId Identifier of the user to ban.
      * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -85,8 +86,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Ban user
-     * 
-     * @param userId 
+     * Marks the user as banned and revokes all their active sessions.
+     * @param userId Identifier of the user to ban.
      * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -104,14 +105,14 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     /**
      * To obtain the request config of the operation banUser
      *
-     * @param userId 
+     * @param userId Identifier of the user to ban.
      * @return RequestConfig
      */
     fun banUserRequestConfig(userId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.POST,
@@ -125,7 +126,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Create user
-     * 
+     * Creates an end-user in your environment. All body fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
      * @param createUserRequest 
      * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
@@ -156,7 +157,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Create user
-     * 
+     * Creates an end-user in your environment. All body fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
      * @param createUserRequest 
      * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
@@ -183,7 +184,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.POST,
@@ -197,8 +198,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Delete user
-     * 
-     * @param userId 
+     * Soft-deletes the user. Idempotent: returns 204 even if the user was already deleted.
+     * @param userId Identifier of the user to delete.
      * @return void
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -227,8 +228,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Delete user
-     * 
-     * @param userId 
+     * Soft-deletes the user. Idempotent: returns 204 even if the user was already deleted.
+     * @param userId Identifier of the user to delete.
      * @return ApiResponse<Unit?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -245,14 +246,15 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     /**
      * To obtain the request config of the operation deleteUser
      *
-     * @param userId 
+     * @param userId Identifier of the user to delete.
      * @return RequestConfig
      */
     fun deleteUserRequestConfig(userId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        
+        localVariableHeaders["Accept"] = "application/problem+json"
+
         return RequestConfig(
             method = RequestMethod.DELETE,
             path = "/api/server/v1/users/{userId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
@@ -265,8 +267,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Get user
-     * 
-     * @param userId 
+     * Returns the full profile for one end-user.
+     * @param userId Identifier of the user to fetch.
      * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -296,8 +298,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Get user
-     * 
-     * @param userId 
+     * Returns the full profile for one end-user.
+     * @param userId Identifier of the user to fetch.
      * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -315,14 +317,14 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     /**
      * To obtain the request config of the operation getUser
      *
-     * @param userId 
+     * @param userId Identifier of the user to fetch.
      * @return RequestConfig
      */
     fun getUserRequestConfig(userId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.GET,
@@ -336,9 +338,9 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Search users
-     * 
-     * @param limit  (optional, default to 20)
-     * @param cursor  (optional)
+     * Returns a cursor-paginated page of end-users in the environment matching the optional filters. Filters use the same tri-state PATCH semantics as &#x60;UpdateUserRequest&#x60;: omit a field to skip that filter, send a value to require it, send null to require null. Uses POST so the filter body can be sent without URL-encoding.
+     * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
+     * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
      * @param serverUserSearchRequest  (optional)
      * @return CursorPageResponseUserResponse
      * @throws IllegalStateException If the request is not correctly configured
@@ -369,9 +371,9 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Search users
-     * 
-     * @param limit  (optional, default to 20)
-     * @param cursor  (optional)
+     * Returns a cursor-paginated page of end-users in the environment matching the optional filters. Filters use the same tri-state PATCH semantics as &#x60;UpdateUserRequest&#x60;: omit a field to skip that filter, send a value to require it, send null to require null. Uses POST so the filter body can be sent without URL-encoding.
+     * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
+     * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
      * @param serverUserSearchRequest  (optional)
      * @return ApiResponse<CursorPageResponseUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
@@ -390,8 +392,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     /**
      * To obtain the request config of the operation searchUsers
      *
-     * @param limit  (optional, default to 20)
-     * @param cursor  (optional)
+     * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
+     * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
      * @param serverUserSearchRequest  (optional)
      * @return RequestConfig
      */
@@ -408,7 +410,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
             }
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.POST,
@@ -422,8 +424,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Unban user
-     * 
-     * @param userId 
+     * Reverses a previous ban. The user can sign in again on next request.
+     * @param userId Identifier of the user to unban.
      * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -453,8 +455,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Unban user
-     * 
-     * @param userId 
+     * Reverses a previous ban. The user can sign in again on next request.
+     * @param userId Identifier of the user to unban.
      * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -472,14 +474,14 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     /**
      * To obtain the request config of the operation unbanUser
      *
-     * @param userId 
+     * @param userId Identifier of the user to unban.
      * @return RequestConfig
      */
     fun unbanUserRequestConfig(userId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.POST,
@@ -493,8 +495,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Update user
-     * 
-     * @param userId 
+     * Partial update with tri-state PATCH semantics. Every field in &#x60;UpdateUserRequest&#x60; is tri-state: omit the key to leave the field unchanged, send a non-null value to set it, or send JSON null to clear it.
+     * @param userId Identifier of the user to update.
      * @param updateUserRequest 
      * @return UserResponse
      * @throws IllegalStateException If the request is not correctly configured
@@ -525,8 +527,8 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Update user
-     * 
-     * @param userId 
+     * Partial update with tri-state PATCH semantics. Every field in &#x60;UpdateUserRequest&#x60; is tri-state: omit the key to leave the field unchanged, send a non-null value to set it, or send JSON null to clear it.
+     * @param userId Identifier of the user to update.
      * @param updateUserRequest 
      * @return ApiResponse<UserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
@@ -545,7 +547,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     /**
      * To obtain the request config of the operation updateUser
      *
-     * @param userId 
+     * @param userId Identifier of the user to update.
      * @param updateUserRequest 
      * @return RequestConfig
      */
@@ -554,7 +556,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.PATCH,

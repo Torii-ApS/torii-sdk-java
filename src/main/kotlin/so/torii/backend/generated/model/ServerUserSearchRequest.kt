@@ -21,37 +21,42 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * 
+ * Optional filter body for `POST /users/search`. Every field is tri-state: omit to skip that filter, send a value to require it, send JSON null to require null.
  *
- * @param name 
- * @param email 
- * @param statuses 
- * @param createdAfter 
- * @param createdBefore 
+ * @param name Filter by name (exact match). Send null to require users with no name.
+ * @param email Filter by primary email (exact match). Send null to require users with no email.
+ * @param statuses Filter by user status. Returns users matching any of the supplied statuses.
+ * @param createdAfter Only return users created at or after this instant (ISO-8601 UTC).
+ * @param createdBefore Only return users created at or before this instant (ISO-8601 UTC).
  */
 @Serializable
 
 data class ServerUserSearchRequest (
 
+    /* Filter by name (exact match). Send null to require users with no name. */
     @SerialName(value = "name")
     val name: kotlin.String? = null,
 
+    /* Filter by primary email (exact match). Send null to require users with no email. */
     @SerialName(value = "email")
     val email: kotlin.String? = null,
 
+    /* Filter by user status. Returns users matching any of the supplied statuses. */
     @SerialName(value = "statuses")
     val statuses: kotlin.collections.Set<ServerUserSearchRequest.Statuses>? = null,
 
+    /* Only return users created at or after this instant (ISO-8601 UTC). */
     @Contextual @SerialName(value = "createdAfter")
     val createdAfter: java.time.OffsetDateTime? = null,
 
+    /* Only return users created at or before this instant (ISO-8601 UTC). */
     @Contextual @SerialName(value = "createdBefore")
     val createdBefore: java.time.OffsetDateTime? = null
 
 ) {
 
     /**
-     * 
+     * Filter by user status. Returns users matching any of the supplied statuses.
      *
      * Values: PENDING_VERIFICATION,ACTIVE,BANNED,DELETED
      */

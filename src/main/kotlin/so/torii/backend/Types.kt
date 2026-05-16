@@ -21,3 +21,10 @@ public data class CursorPage<T>(
     val nextCursor: String?,
     val hasMore: Boolean,
 )
+
+/**
+ * Re-export of the generated `ProblemDetail` (RFC 7807) under a stable,
+ * package-level alias. All torii API errors that ship a body use this shape;
+ * `ToriiApiException.body` deserializes to this when present.
+ */
+public typealias ToriiProblemDetail = so.torii.backend.generated.model.ProblemDetail

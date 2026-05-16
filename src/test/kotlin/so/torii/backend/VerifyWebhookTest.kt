@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test
 
 class VerifyWebhookTest {
     @Test
-    fun `stub throws explaining feature is not shipped`() {
+    fun `stub throws explaining feature is not available`() {
         val ex = assertThrows(ToriiAuthException::class.java) {
             verifyWebhook("whsec_fake", emptyMap(), ByteArray(0))
         }
-        assertTrue(ex.message!!.contains("not shipped yet"))
+        assertTrue(ex.message!!.contains("not yet available"))
     }
 }
