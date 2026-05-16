@@ -15,7 +15,7 @@ For security-sensitive issues (anything that could let an attacker forge or bypa
 ## Development
 
 ```sh
-git clone https://github.com/GOOD-Code-ApS/torii-sdk-java
+git clone https://github.com/Torii-ApS/torii-sdk-java
 cd torii-sdk-java
 ./gradlew build
 ```

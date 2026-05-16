@@ -142,7 +142,7 @@ publishing {
                     }
                 }
                 scm {
-                    url.set("https://github.com/GOOD-Code-ApS/torii")
+                    url.set("https://github.com/Torii-ApS/torii")
                 }
             }
         }

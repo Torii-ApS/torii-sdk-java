@@ -147,7 +147,7 @@ torii.users.update(
 > so the generated DTO can't distinguish "absent" from "null" over the wire
 > for those fields. We forward `NotIncluded` as `null`; the dashboard
 > currently treats both the same. Tighter PATCH semantics will land alongside
-> GOOD-Code-ApS/torii#424 Phase 0.7.
+> Torii-ApS/torii#424 Phase 0.7.
 
 ## Errors
 
@@ -159,7 +159,7 @@ torii.users.update(
 ## Webhooks
 
 `verifyWebhook(...)` is a documented stub — torii's outbound webhook
-subsystem ships under GOOD-Code-ApS/torii#424 Phase 0.5. Calling it today throws
+subsystem ships under Torii-ApS/torii#424 Phase 0.5. Calling it today throws
 `ToriiAuthException`. When the feature lands, callers won't need to change
 their integration shape.
 
@@ -191,7 +191,7 @@ torii-sdk-java/
 │   ├── Types.kt                # User / Session typealiases + CursorPage
 │   ├── VerifyToken.kt          # ES256 + JWKS-cached verifier
 │   ├── AuthenticateRequest.kt  # Authorization-header helper
-│   ├── VerifyWebhook.kt        # stub for GOOD-Code-ApS/torii#424 Phase 0.5
+│   ├── VerifyWebhook.kt        # stub for Torii-ApS/torii#424 Phase 0.5
 │   └── spring/
 │       └── ToriiAuthenticationFilter.kt
 └── src/test/kotlin/            # JUnit 5 tests with in-process JWKS server
