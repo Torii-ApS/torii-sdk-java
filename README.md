@@ -93,7 +93,7 @@ ToriiClient.create(secretKey = "...", apiUrl = "https://api.staging.torii.so")
 `UpdateUserInput` fields are tri-state via [`PatchValue<T>`](src/main/kotlin/so/torii/backend/PatchValue.kt):
 
 - `PatchValue.Set(value)` — emit the key with the value → server updates the field
-- `PatchValue.Clear` — emit the key with `null` → server clears the field
+- `PatchValue.Set(null)` — emit the key with `null` → server clears the field
 - `PatchValue.NotIncluded` (the default) — omit the key entirely → server leaves the field unchanged
 
 ```kotlin
@@ -101,7 +101,7 @@ torii.users.update(
     userId = id,
     patches = UpdateUserInput(
         name = PatchValue.Set("Ada"),   // -> {"name":"Ada"}
-        phone = PatchValue.Clear,       // -> {"phone":null}
+        phone = PatchValue.Set(null),       // -> {"phone":null}
         // address omitted              // -> key not present in body
     ),
 )
@@ -116,7 +116,7 @@ From Java, use the static factories:
 ```java
 toriiClient.getUsers().update(userId, new UpdateUserInput(
     PatchValue.set("Ada"),  // name
-    PatchValue.clear(),     // phone
+    PatchValue.set(null),     // phone
     PatchValue.omit(),      // avatarUrl
     PatchValue.omit(),      // locale
     PatchValue.omit(),      // address

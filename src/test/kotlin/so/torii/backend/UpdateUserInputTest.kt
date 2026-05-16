@@ -8,23 +8,23 @@ import java.time.LocalDate
  * Verifies [UpdateUserInput.toJsonObject] produces the exact wire body the
  * server expects:
  *
- *  - [PatchValue.Set]         → `"key": value`
- *  - [PatchValue.Clear]       → `"key": null`
- *  - [PatchValue.NotIncluded] → key omitted entirely
+ *  - [PatchValue.Set] with a value → `"key": value`
+ *  - [PatchValue.Set] with null    → `"key": null`
+ *  - [PatchValue.NotIncluded]      → key omitted entirely
  *
  * The body builder is the single source of truth for PATCH semantics; if
  * these tests pass, customers' tri-state intent makes it to the wire.
  */
 class UpdateUserInputTest {
     @Test
-    fun `Set emits only the named key with its value`() {
+    fun `Set with value emits only the named key with that value`() {
         val body = UpdateUserInput(name = PatchValue.Set("Ada")).toJsonObject().toString()
         assertEquals("""{"name":"Ada"}""", body)
     }
 
     @Test
-    fun `Clear emits the key with explicit null`() {
-        val body = UpdateUserInput(phone = PatchValue.Clear).toJsonObject().toString()
+    fun `Set with null emits the key with explicit null`() {
+        val body = UpdateUserInput(phone = PatchValue.Set(null)).toJsonObject().toString()
         assertEquals("""{"phone":null}""", body)
     }
 
@@ -35,10 +35,10 @@ class UpdateUserInputTest {
     }
 
     @Test
-    fun `mixed Set Clear and NotIncluded preserves intent`() {
+    fun `mixed Set value Set null and NotIncluded preserves intent`() {
         val body = UpdateUserInput(
             name = PatchValue.Set("Ada"),
-            phone = PatchValue.Clear,
+            phone = PatchValue.Set(null),
             address = PatchValue.NotIncluded,
         ).toJsonObject().toString()
         assertEquals("""{"name":"Ada","phone":null}""", body)
@@ -56,7 +56,7 @@ class UpdateUserInputTest {
     fun `Java-style static factories produce equivalent wire output`() {
         val body = UpdateUserInput(
             name = PatchValue.set("Ada"),
-            phone = PatchValue.clear(),
+            phone = PatchValue.set(null),
             address = PatchValue.omit(),
         ).toJsonObject().toString()
         assertEquals("""{"name":"Ada","phone":null}""", body)
