@@ -21,42 +21,50 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * 
+ * An active end-user session in your environment.
  *
- * @param id 
- * @param userId 
- * @param environmentId 
- * @param createdAt 
- * @param expiresAt 
- * @param lastUsedAt 
- * @param userAgent 
- * @param ipAddress 
+ * @param id Unique identifier for this session.
+ * @param userId Identifier of the end-user this session belongs to.
+ * @param environmentId Identifier of the environment this session belongs to.
+ * @param createdAt When this session was created (ISO-8601 UTC).
+ * @param expiresAt When this session expires (ISO-8601 UTC).
+ * @param lastUsedAt When this session was last seen by the API (ISO-8601 UTC).
+ * @param userAgent Raw User-Agent string captured when the session was created.
+ * @param ipAddress IP address captured when the session was created.
  */
 @Serializable
 
 data class UserSessionResponse (
 
+    /* Unique identifier for this session. */
     @Contextual @SerialName(value = "id")
     val id: java.util.UUID,
 
+    /* Identifier of the end-user this session belongs to. */
     @Contextual @SerialName(value = "userId")
     val userId: java.util.UUID,
 
+    /* Identifier of the environment this session belongs to. */
     @Contextual @SerialName(value = "environmentId")
     val environmentId: java.util.UUID,
 
+    /* When this session was created (ISO-8601 UTC). */
     @Contextual @SerialName(value = "createdAt")
     val createdAt: java.time.OffsetDateTime,
 
+    /* When this session expires (ISO-8601 UTC). */
     @Contextual @SerialName(value = "expiresAt")
     val expiresAt: java.time.OffsetDateTime,
 
+    /* When this session was last seen by the API (ISO-8601 UTC). */
     @Contextual @SerialName(value = "lastUsedAt")
     val lastUsedAt: java.time.OffsetDateTime,
 
+    /* Raw User-Agent string captured when the session was created. */
     @SerialName(value = "userAgent")
     val userAgent: kotlin.String? = null,
 
+    /* IP address captured when the session was created. */
     @SerialName(value = "ipAddress")
     val ipAddress: kotlin.String? = null
 

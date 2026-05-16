@@ -19,6 +19,7 @@ import java.io.IOException
 import okhttp3.OkHttpClient
 import okhttp3.HttpUrl
 
+import so.torii.backend.generated.model.ProblemDetail
 import so.torii.backend.generated.model.UserSessionResponse
 
 import kotlinx.serialization.SerialName
@@ -44,14 +45,14 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:54529")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:56602")
         }
     }
 
     /**
      * List user sessions
-     * 
-     * @param userId 
+     * Returns all active (unexpired, unrevoked) sessions for the user, ordered by most recently used.
+     * @param userId Identifier of the user whose sessions to list.
      * @return kotlin.collections.List<UserSessionResponse>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -81,8 +82,8 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
 
     /**
      * List user sessions
-     * 
-     * @param userId 
+     * Returns all active (unexpired, unrevoked) sessions for the user, ordered by most recently used.
+     * @param userId Identifier of the user whose sessions to list.
      * @return ApiResponse<kotlin.collections.List<UserSessionResponse>?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -100,14 +101,14 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     /**
      * To obtain the request config of the operation listSessions
      *
-     * @param userId 
+     * @param userId Identifier of the user whose sessions to list.
      * @return RequestConfig
      */
     fun listSessionsRequestConfig(userId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.GET,
@@ -121,8 +122,8 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
 
     /**
      * Revoke all sessions
-     * 
-     * @param userId 
+     * Immediately revokes every active session for the user. Idempotent.
+     * @param userId Identifier of the user whose sessions to revoke.
      * @return void
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -151,8 +152,8 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
 
     /**
      * Revoke all sessions
-     * 
-     * @param userId 
+     * Immediately revokes every active session for the user. Idempotent.
+     * @param userId Identifier of the user whose sessions to revoke.
      * @return ApiResponse<Unit?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -169,14 +170,15 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     /**
      * To obtain the request config of the operation revokeAllSessions
      *
-     * @param userId 
+     * @param userId Identifier of the user whose sessions to revoke.
      * @return RequestConfig
      */
     fun revokeAllSessionsRequestConfig(userId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        
+        localVariableHeaders["Accept"] = "application/problem+json"
+
         return RequestConfig(
             method = RequestMethod.DELETE,
             path = "/api/server/v1/users/{userId}/sessions".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
@@ -189,9 +191,9 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
 
     /**
      * Revoke specific session
-     * 
-     * @param userId 
-     * @param sessionId 
+     * Revokes a single session by id. Idempotent: returns 204 even if the session was already revoked or expired.
+     * @param userId Identifier of the user who owns the session.
+     * @param sessionId Identifier of the session to revoke.
      * @return void
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -220,9 +222,9 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
 
     /**
      * Revoke specific session
-     * 
-     * @param userId 
-     * @param sessionId 
+     * Revokes a single session by id. Idempotent: returns 204 even if the session was already revoked or expired.
+     * @param userId Identifier of the user who owns the session.
+     * @param sessionId Identifier of the session to revoke.
      * @return ApiResponse<Unit?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
@@ -239,15 +241,16 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     /**
      * To obtain the request config of the operation revokeSession
      *
-     * @param userId 
-     * @param sessionId 
+     * @param userId Identifier of the user who owns the session.
+     * @param sessionId Identifier of the session to revoke.
      * @return RequestConfig
      */
     fun revokeSessionRequestConfig(userId: java.util.UUID, sessionId: java.util.UUID) : RequestConfig<Unit> {
         val localVariableBody = null
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
-        
+        localVariableHeaders["Accept"] = "application/problem+json"
+
         return RequestConfig(
             method = RequestMethod.DELETE,
             path = "/api/server/v1/users/{userId}/sessions/{sessionId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())).replace("{"+"sessionId"+"}", encodeURIComponent(sessionId.toString())),

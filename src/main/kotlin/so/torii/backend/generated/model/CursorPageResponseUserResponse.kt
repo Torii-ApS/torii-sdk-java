@@ -22,22 +22,25 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * 
+ * A single page of results in a cursor-paginated list. Pass `nextCursor` as the `cursor` query parameter to fetch the following page.
  *
- * @param items 
- * @param hasMore 
- * @param nextCursor 
+ * @param items Items in this page, in stable order.
+ * @param hasMore True if more pages are available (equivalent to `nextCursor != null`).
+ * @param nextCursor Cursor to pass to fetch the next page. Null when this is the last page.
  */
 @Serializable
 
 data class CursorPageResponseUserResponse (
 
+    /* Items in this page, in stable order. */
     @SerialName(value = "items")
     val items: kotlin.collections.List<UserResponse>,
 
+    /* True if more pages are available (equivalent to `nextCursor != null`). */
     @SerialName(value = "hasMore")
     val hasMore: kotlin.Boolean,
 
+    /* Cursor to pass to fetch the next page. Null when this is the last page. */
     @Contextual @SerialName(value = "nextCursor")
     val nextCursor: java.util.UUID? = null
 

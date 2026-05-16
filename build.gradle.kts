@@ -84,6 +84,21 @@ tasks.register<Sync>("regenerateOpenApi") {
     dependsOn("openApiGenerate")
     from(openApiStaging.map { it.dir("src/main/kotlin/so/torii/backend/generated") })
     into(generatedSourcesDir)
+    doLast {
+        // kotlinx.serialization can't synthesise a serializer for `kotlin.Any`,
+        // so rewrite the one place the kotlin generator emits it
+        // (ProblemDetail.properties: Map<String, Object> in the spec) to use
+        // JsonElement instead. Idempotent: a no-op once already rewritten.
+        val problemDetail = file("$generatedSourcesDir/model/ProblemDetail.kt")
+        if (problemDetail.exists()) {
+            val text = problemDetail.readText()
+            val patched = text.replace(
+                "kotlin.collections.Map<kotlin.String, kotlin.Any>",
+                "kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>",
+            )
+            if (patched != text) problemDetail.writeText(patched)
+        }
+    }
 }
 
 dependencies {

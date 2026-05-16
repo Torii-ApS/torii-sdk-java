@@ -21,69 +21,82 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * 
+ * An end-user belonging to one of your environments.
  *
- * @param id 
- * @param environmentId 
- * @param status 
- * @param createdAt 
- * @param updatedAt 
- * @param name 
- * @param phone 
- * @param avatarUrl 
- * @param locale 
- * @param address 
- * @param dateOfBirth 
- * @param email 
- * @param deletedAt 
+ * @param id Unique identifier for this user.
+ * @param environmentId Identifier of the environment this user belongs to.
+ * @param status Lifecycle status of the user (e.g. active, banned).
+ * @param createdAt When this user was created (ISO-8601 UTC).
+ * @param updatedAt When this user was last modified (ISO-8601 UTC).
+ * @param name Full name on the profile, if any.
+ * @param phone Phone number on the profile, if any. Not guaranteed to be verified.
+ * @param avatarUrl URL of the user's avatar image, if any.
+ * @param locale Preferred locale for emails and UI messages.
+ * @param address Free-form address string, if provided.
+ * @param dateOfBirth Date of birth in ISO-8601 (YYYY-MM-DD), if provided.
+ * @param email Primary email on the profile, if any. Not guaranteed to be verified.
+ * @param deletedAt When this user was deleted, if soft-deleted. Null for active users.
  */
 @Serializable
 
 data class UserResponse (
 
+    /* Unique identifier for this user. */
     @Contextual @SerialName(value = "id")
     val id: java.util.UUID,
 
+    /* Identifier of the environment this user belongs to. */
     @Contextual @SerialName(value = "environmentId")
     val environmentId: java.util.UUID,
 
+    /* Lifecycle status of the user (e.g. active, banned). */
     @SerialName(value = "status")
     val status: UserResponse.Status,
 
+    /* When this user was created (ISO-8601 UTC). */
     @Contextual @SerialName(value = "createdAt")
     val createdAt: java.time.OffsetDateTime,
 
+    /* When this user was last modified (ISO-8601 UTC). */
     @Contextual @SerialName(value = "updatedAt")
     val updatedAt: java.time.OffsetDateTime,
 
+    /* Full name on the profile, if any. */
     @SerialName(value = "name")
     val name: kotlin.String? = null,
 
+    /* Phone number on the profile, if any. Not guaranteed to be verified. */
     @SerialName(value = "phone")
     val phone: kotlin.String? = null,
 
+    /* URL of the user's avatar image, if any. */
     @SerialName(value = "avatarUrl")
     val avatarUrl: kotlin.String? = null,
 
+    /* Preferred locale for emails and UI messages. */
     @SerialName(value = "locale")
     val locale: UserResponse.Locale? = null,
 
+    /* Free-form address string, if provided. */
     @SerialName(value = "address")
     val address: kotlin.String? = null,
 
+    /* Date of birth in ISO-8601 (YYYY-MM-DD), if provided. */
     @Contextual @SerialName(value = "dateOfBirth")
     val dateOfBirth: java.time.LocalDate? = null,
 
+    /* Primary email on the profile, if any. Not guaranteed to be verified. */
     @SerialName(value = "email")
     val email: kotlin.String? = null,
 
+    /* When this user was deleted, if soft-deleted. Null for active users. */
     @Contextual @SerialName(value = "deletedAt")
     val deletedAt: java.time.OffsetDateTime? = null
 
 ) {
 
     /**
-     * 
+     * Lifecycle status of the user (e.g. active, banned).
      *
      * Values: PENDING_VERIFICATION,ACTIVE,BANNED,DELETED
      */
@@ -95,7 +108,7 @@ data class UserResponse (
         @SerialName(value = "deleted") DELETED("deleted");
     }
     /**
-     * 
+     * Preferred locale for emails and UI messages.
      *
      * Values: EN,DA
      */

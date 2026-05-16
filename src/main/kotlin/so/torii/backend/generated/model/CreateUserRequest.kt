@@ -21,34 +21,40 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * 
+ * Request body for creating an end-user in your environment. All fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
  *
- * @param email 
- * @param password 
- * @param name 
- * @param phone 
- * @param address 
- * @param dateOfBirth 
+ * @param email Primary email for the new user. If omitted, the user is created without a sign-in identity.
+ * @param password Initial password. Subject to the environment's password policy. Omit to create a passwordless user (e.g. social-only).
+ * @param name Display name to seed on the profile.
+ * @param phone Phone number to seed on the profile.
+ * @param address Postal address to seed on the profile.
+ * @param dateOfBirth Date of birth in ISO-8601 (YYYY-MM-DD).
  */
 @Serializable
 
 data class CreateUserRequest (
 
+    /* Primary email for the new user. If omitted, the user is created without a sign-in identity. */
     @SerialName(value = "email")
     val email: kotlin.String? = null,
 
+    /* Initial password. Subject to the environment's password policy. Omit to create a passwordless user (e.g. social-only). */
     @SerialName(value = "password")
     val password: kotlin.String? = null,
 
+    /* Display name to seed on the profile. */
     @SerialName(value = "name")
     val name: kotlin.String? = null,
 
+    /* Phone number to seed on the profile. */
     @SerialName(value = "phone")
     val phone: kotlin.String? = null,
 
+    /* Postal address to seed on the profile. */
     @SerialName(value = "address")
     val address: kotlin.String? = null,
 
+    /* Date of birth in ISO-8601 (YYYY-MM-DD). */
     @Contextual @SerialName(value = "dateOfBirth")
     val dateOfBirth: java.time.LocalDate? = null
 
