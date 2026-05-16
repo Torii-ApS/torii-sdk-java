@@ -28,7 +28,7 @@ The REST client lives under `src/main/kotlin/so/torii/backend/generated/` and is
 
 That task generates into `build/openapi-staging/` and syncs only the Kotlin sources into `src/main/kotlin/so/torii/backend/generated/`. Commit the result.
 
-The hand-written surface lives under `src/main/kotlin/so/torii/backend/` (auth helpers, REST client wrapper, error types) plus the Spring Security adapter under `src/main/kotlin/so/torii/backend/spring/`. That's where bug reports and PRs typically land.
+The hand-written surface lives under `src/main/kotlin/so/torii/backend/` (auth helpers, REST client wrapper, error types). That's where bug reports and PRs typically land.
 
 ## Pull requests
 

@@ -104,22 +104,10 @@ dependencies {
     // wrappers via runBlocking for Java callers.
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
-    // Spring Security adapter — compileOnly so consumers without Spring
-    // don't pull these onto their runtime classpath.
-    compileOnly("org.springframework.security:spring-security-core:6.3.3")
-    compileOnly("org.springframework.security:spring-security-web:6.3.3")
-    compileOnly("org.springframework:spring-web:6.1.13")
-    compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
-
     // Tests
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.springframework.security:spring-security-core:6.3.3")
-    testImplementation("org.springframework.security:spring-security-web:6.3.3")
-    testImplementation("org.springframework:spring-web:6.1.13")
-    testImplementation("org.springframework:spring-test:6.1.13")
-    testImplementation("jakarta.servlet:jakarta.servlet-api:6.0.0")
 }
 
 tasks.withType<Test>().configureEach {

@@ -5,7 +5,7 @@ Kotlin-first, Java-interoperable backend SDK for [torii](https://torii.so).
 - JWT verification (ES256, networkless after a one-time JWKS fetch, kid-rotated)
 - `Authorization: Bearer` request authentication
 - REST client for `/api/server/v1/**` (users, sessions)
-- Spring Security adapter (`OncePerRequestFilter`)
+- Pure Java/Kotlin — no framework dependency. Framework adapters (Spring Security, Ktor, Micronaut) will land in separate artifacts later.
 
 > Maven coordinates: **`so.torii:torii-backend:0.0.1`**
 > JVM target: **17+** (compatible with most production JVMs; the torii server itself runs on JDK 25 but the SDK should not require that)
@@ -66,46 +66,6 @@ val auth = authenticateRequest(
 )
 ```
 
-## Spring Security
-
-```kotlin
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import so.torii.backend.spring.ToriiAuthenticationFilter
-
-@Configuration
-class SecurityConfig {
-    @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        val filter = ToriiAuthenticationFilter(issuer = "https://acme.torii.so")
-        http
-            .csrf { it.disable() }
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .authorizeHttpRequests { it.anyRequest().authenticated() }
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter::class.java)
-        return http.build()
-    }
-}
-```
-
-Inside a controller, the principal is a `so.torii.backend.Auth`:
-
-```kotlin
-@GetMapping("/me")
-fun me(authentication: Authentication): String {
-    val auth = authentication.principal as so.torii.backend.Auth
-    return "hello ${auth.userId}"
-}
-```
-
-Spring Security is **optional** — its artifacts are declared `compileOnly`,
-so projects that only use the JWT helpers don't pay for them on the runtime
-classpath.
-
 ## REST client
 
 ```kotlin
@@ -152,7 +112,7 @@ torii.users.update(
 ## Errors
 
 - `ToriiAuthException` — JWT verification or `Authorization` parsing failure.
-  Translate to HTTP 401 in your app (the Spring filter does this for you).
+  Translate to HTTP 401 in your app.
 - `ToriiApiException` — non-2xx response from `api.torii.so`. Exposes
   `status`, `code` (Problem-style), `supportId`, and the raw `body`.
 
@@ -169,10 +129,10 @@ The REST client is generated from `spec/server-v1.json` by
 `openapi-generator` (Gradle plugin). To refresh:
 
 ```bash
-./gradlew openApiGenerate
+./gradlew regenerateOpenApi
 ```
 
-Generation runs automatically on every `./gradlew build`.
+Generated sources live under `src/main/kotlin/so/torii/backend/generated/` and are committed (matching the other torii SDKs). The task above stages a fresh generation into `build/openapi-staging/` and syncs only the Kotlin sources into the committed location.
 
 ## Repository layout
 
@@ -192,7 +152,6 @@ torii-sdk-java/
 │   ├── VerifyToken.kt          # ES256 + JWKS-cached verifier
 │   ├── AuthenticateRequest.kt  # Authorization-header helper
 │   ├── VerifyWebhook.kt        # stub for Torii-ApS/torii#424 Phase 0.5
-│   └── spring/
-│       └── ToriiAuthenticationFilter.kt
+│   └── generated/              # openapi-generator output (committed)
 └── src/test/kotlin/            # JUnit 5 tests with in-process JWKS server
 ```
