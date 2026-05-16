@@ -33,20 +33,33 @@ kotlin {
 }
 
 // ---------------------------------------------------------------------------
-// OpenAPI generator: regenerates the REST client from spec/server-v1.json
-// into build/generated/openapi. The main source set picks up the generated
-// kotlin so callers get typed `UsersApi` + `SessionsApi`.
+// OpenAPI generator: produces the REST client from spec/server-v1.json into
+// src/main/kotlin/so/torii/backend/generated/. The generated sources are
+// **committed** so the layout matches the other torii SDKs (the `generated/`
+// directory is browsable on GitHub, no Gradle step required to read the
+// client). Regenerate after a spec update with:
+//
+//   ./gradlew regenerateOpenApi
+//
+// The generator first emits into a staging dir under build/ (so the cruft
+// — README, build.gradle, docs — stays out of the repo), then the Sync task
+// copies only the Kotlin sources into the committed location.
 // ---------------------------------------------------------------------------
 
-val openApiOutput = layout.buildDirectory.dir("generated/openapi")
+val openApiStaging = layout.buildDirectory.dir("openapi-staging")
+val generatedSourcesDir = file("$projectDir/src/main/kotlin/so/torii/backend/generated")
 
 openApiGenerate {
     generatorName.set("kotlin")
     inputSpec.set("$rootDir/spec/server-v1.json")
-    outputDir.set(openApiOutput.get().asFile.absolutePath)
+    outputDir.set(openApiStaging.get().asFile.absolutePath)
     apiPackage.set("so.torii.backend.generated.api")
     modelPackage.set("so.torii.backend.generated.model")
-    invokerPackage.set("so.torii.backend.generated.infrastructure")
+    // `packageName` controls the *infrastructure* (invoker) package on the
+    // Kotlin generator. The previous `invokerPackage` setting was a no-op
+    // here — it's a Java-target property. Without packageName, infrastructure
+    // would land at the default `org.openapitools.client.infrastructure`.
+    packageName.set("so.torii.backend.generated")
     // jvm-okhttp4 is the most actively maintained Kotlin client target.
     // kotlinx_serialization keeps dependencies aligned with the hand-written code.
     configOptions.set(
@@ -62,18 +75,15 @@ openApiGenerate {
     )
 }
 
-sourceSets {
-    main {
-        kotlin.srcDir(openApiOutput.map { it.dir("src/main/kotlin") })
-    }
-}
-
-tasks.named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileKotlin") {
-    dependsOn(tasks.named("openApiGenerate"))
-}
-
-tasks.named("sourcesJar") {
-    dependsOn(tasks.named("openApiGenerate"))
+// Single command for contributors after a spec bump. Replaces the previous
+// `openApiGenerate` workflow that emitted into build/ and was wired into
+// compileKotlin as a build-time step.
+tasks.register<Sync>("regenerateOpenApi") {
+    group = "openapi"
+    description = "Regenerates the REST client from spec/server-v1.json and copies it into src/main/kotlin/so/torii/backend/generated/."
+    dependsOn("openApiGenerate")
+    from(openApiStaging.map { it.dir("src/main/kotlin/so/torii/backend/generated") })
+    into(generatedSourcesDir)
 }
 
 dependencies {

@@ -8,8 +8,8 @@ import kotlinx.serialization.json.JsonPrimitive
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
-import org.openapitools.client.infrastructure.ClientException
-import org.openapitools.client.infrastructure.ServerException
+import so.torii.backend.generated.infrastructure.ClientException
+import so.torii.backend.generated.infrastructure.ServerException
 import so.torii.backend.generated.api.ServerSessionsApi
 import so.torii.backend.generated.api.ServerUsersApi
 import so.torii.backend.generated.model.CreateUserRequest
