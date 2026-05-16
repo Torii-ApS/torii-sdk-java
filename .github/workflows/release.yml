@@ -1,0 +1,73 @@
+name: Release
+
+# Tag-triggered Maven Central publish via Sonatype Central Portal.
+#
+# Prerequisites (one-time, see torii repo docs/Publishing-SDKs.md):
+#   1. Sonatype Central Portal account, namespace `so.torii` verified.
+#   2. GPG key generated, public key published to keys.openpgp.org.
+#   3. Repo secrets (Settings → Secrets and variables → Actions):
+#        - SONATYPE_TOKEN_USERNAME   (from Sonatype "Generate User Token")
+#        - SONATYPE_TOKEN_PASSWORD
+#        - GPG_PRIVATE_KEY           (ASCII-armored, full secret key)
+#        - GPG_PASSPHRASE
+#   4. GitHub Environment `maven-central` with required reviewer approval.
+#
+# This workflow assumes `build.gradle.kts` uses the
+# `com.vanniktech.maven.publish` plugin (handles signing + Central Portal
+# upload in one task). See the same PR that introduced this workflow for
+# the gradle config change.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write  # for GH release creation
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: maven-central
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Assert tag matches build.gradle.kts version
+        run: |
+          GRADLE_VERSION=$(./gradlew --no-daemon -q properties --property version | grep '^version:' | awk '{print $2}')
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$GRADLE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match Gradle version ${GRADLE_VERSION}" >&2
+            exit 1
+          fi
+
+      - name: Test on tagged SHA
+        run: ./gradlew --no-daemon test
+
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_TOKEN_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_TOKEN_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
+        # publishAndReleaseToMavenCentral is the vanniktech-plugin task that
+        # signs, uploads, and triggers Central Portal release in one step.
+        # Falls back to publishToMavenCentral if you prefer a manual release
+        # gate via the Central Portal UI.
+        run: ./gradlew --no-daemon --no-configuration-cache publishAndReleaseToMavenCentral
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
