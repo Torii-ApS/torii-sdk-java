@@ -33,14 +33,14 @@ import kotlinx.serialization.Contextual
 
 data class ServerUserSearchRequest (
 
-    @Contextual @SerialName(value = "name")
-    val name: kotlin.Any? = null,
+    @SerialName(value = "name")
+    val name: kotlin.String? = null,
 
-    @Contextual @SerialName(value = "email")
-    val email: kotlin.Any? = null,
+    @SerialName(value = "email")
+    val email: kotlin.String? = null,
 
-    @Contextual @SerialName(value = "statuses")
-    val statuses: kotlin.Any? = null,
+    @SerialName(value = "statuses")
+    val statuses: kotlin.collections.Set<ServerUserSearchRequest.Statuses>? = null,
 
     @Contextual @SerialName(value = "createdAfter")
     val createdAfter: java.time.OffsetDateTime? = null,
@@ -50,6 +50,18 @@ data class ServerUserSearchRequest (
 
 ) {
 
+    /**
+     * 
+     *
+     * Values: PENDING_VERIFICATION,ACTIVE,BANNED,DELETED
+     */
+    @Serializable
+    enum class Statuses(val value: kotlin.String) {
+        @SerialName(value = "pending_verification") PENDING_VERIFICATION("pending_verification"),
+        @SerialName(value = "active") ACTIVE("active"),
+        @SerialName(value = "banned") BANNED("banned"),
+        @SerialName(value = "deleted") DELETED("deleted");
+    }
 
 }
 

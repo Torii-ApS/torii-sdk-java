@@ -1,33 +1,35 @@
 package so.torii.backend
 
 /**
- * Three-state value for PATCH semantics on nullable fields:
- *  - [Set] sends a concrete value (including `null` to clear)
- *  - [NotIncluded] omits the field from the request — server keeps existing
+ * Tri-state wrapper for PATCH body fields. Mirrors the server-side
+ * `com.github.goodcode.gated.shared.PatchValue<T>` so customer-facing
+ * intent translates 1:1 to wire semantics.
  *
- * Use it so callers can distinguish "leave alone" from "set to null".
+ * - [Set] with a non-null value → emit JSON key with the value → server updates the field
+ * - [Set] with a null value     → emit JSON key with explicit null → server clears the field
+ * - [NotIncluded] (the default) → omit the JSON key entirely → server leaves the field unchanged
  *
  * ```kotlin
- * client.users.update(id, UserPatch(
- *     name = PatchValue.Set("Ada"),
- *     phone = PatchValue.Set(null), // clears phone
- *     // address omitted -> NotIncluded -> server-side untouched
+ * client.users.update(id, UpdateUserInput(
+ *     name = PatchValue.Set("Ada"),   // -> {"name":"Ada"}    update
+ *     phone = PatchValue.Set(null),   // -> {"phone":null}    clear
+ *     // address omitted              // -> key not present    leave alone
  * ))
  * ```
  *
- * Java callers can use the static factories: `PatchValue.set(value)` and
- * `PatchValue.notIncluded()`.
+ * Java callers use the static factories: `PatchValue.set(value)` and
+ * `PatchValue.omit()`. `PatchValue.set(null)` clears the field.
  */
-public sealed class PatchValue<out T> {
-    public data class Set<out T>(val value: T) : PatchValue<T>()
+public sealed interface PatchValue<out T> {
+    public data class Set<out T>(val value: T) : PatchValue<T>
 
-    public object NotIncluded : PatchValue<Nothing>()
+    public object NotIncluded : PatchValue<Nothing>
 
     public companion object {
         @JvmStatic
         public fun <T> set(value: T): PatchValue<T> = Set(value)
 
         @JvmStatic
-        public fun <T> notIncluded(): PatchValue<T> = @Suppress("UNCHECKED_CAST") (NotIncluded as PatchValue<T>)
+        public fun omit(): PatchValue<Nothing> = NotIncluded
     }
 }

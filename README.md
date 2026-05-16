@@ -90,24 +90,39 @@ ToriiClient.create(secretKey = "...", apiUrl = "https://api.staging.torii.so")
 
 ### PATCH semantics
 
-`UpdateUserInput` fields use `PatchValue`:
+`UpdateUserInput` fields are tri-state via [`PatchValue<T>`](src/main/kotlin/so/torii/backend/PatchValue.kt):
+
+- `PatchValue.Set(value)` — emit the key with the value → server updates the field
+- `PatchValue.Set(null)` — emit the key with `null` → server clears the field
+- `PatchValue.NotIncluded` (the default) — omit the key entirely → server leaves the field unchanged
 
 ```kotlin
 torii.users.update(
     userId = id,
     patches = UpdateUserInput(
-        name = PatchValue.Set("Ada"),
-        phone = PatchValue.Set(null), // clears phone
-        // address left as PatchValue.NotIncluded → server-side untouched
+        name = PatchValue.Set("Ada"),   // -> {"name":"Ada"}
+        phone = PatchValue.Set(null),       // -> {"phone":null}
+        // address omitted              // -> key not present in body
     ),
 )
 ```
 
-> Note: the OpenAPI spec currently declares update fields as unconstrained,
-> so the generated DTO can't distinguish "absent" from "null" over the wire
-> for those fields. We forward `NotIncluded` as `null`; the dashboard
-> currently treats both the same. Tighter PATCH semantics will land alongside
-> Torii-ApS/torii#424 Phase 0.7.
+The SDK builds the PATCH body directly from `UpdateUserInput` so the wire
+JSON contains only the keys the caller mentioned — "leave alone" stays
+distinct from "clear to null".
+
+From Java, use the static factories:
+
+```java
+toriiClient.getUsers().update(userId, new UpdateUserInput(
+    PatchValue.set("Ada"),  // name
+    PatchValue.set(null),     // phone
+    PatchValue.omit(),      // avatarUrl
+    PatchValue.omit(),      // locale
+    PatchValue.omit(),      // address
+    PatchValue.omit()       // dateOfBirth
+));
+```
 
 ## Errors
 
@@ -146,7 +161,8 @@ torii-sdk-java/
 ├── src/main/kotlin/so/torii/backend/
 │   ├── Auth.kt                 # Verified-token DTO
 │   ├── Errors.kt               # ToriiApiException, ToriiAuthException
-│   ├── PatchValue.kt           # 3-state PATCH sealed class
+│   ├── PatchValue.kt           # tri-state PATCH sealed interface
+│   ├── UpdateUserInput.kt      # PATCH input + JsonObject serialiser
 │   ├── ToriiClient.kt          # REST client wrapper + factory
 │   ├── Types.kt                # User / Session typealiases + CursorPage
 │   ├── VerifyToken.kt          # ES256 + JWKS-cached verifier

@@ -34,26 +34,36 @@ import kotlinx.serialization.Contextual
 
 data class UpdateUserRequest (
 
-    @Contextual @SerialName(value = "name")
-    val name: kotlin.Any? = null,
+    @SerialName(value = "name")
+    val name: kotlin.String? = null,
 
-    @Contextual @SerialName(value = "phone")
-    val phone: kotlin.Any? = null,
+    @SerialName(value = "phone")
+    val phone: kotlin.String? = null,
 
-    @Contextual @SerialName(value = "avatarUrl")
-    val avatarUrl: kotlin.Any? = null,
+    @SerialName(value = "avatarUrl")
+    val avatarUrl: kotlin.String? = null,
 
-    @Contextual @SerialName(value = "locale")
-    val locale: kotlin.Any? = null,
+    @SerialName(value = "locale")
+    val locale: UpdateUserRequest.Locale? = null,
 
-    @Contextual @SerialName(value = "address")
-    val address: kotlin.Any? = null,
+    @SerialName(value = "address")
+    val address: kotlin.String? = null,
 
     @Contextual @SerialName(value = "dateOfBirth")
-    val dateOfBirth: kotlin.Any? = null
+    val dateOfBirth: java.time.LocalDate? = null
 
 ) {
 
+    /**
+     * 
+     *
+     * Values: EN,DA
+     */
+    @Serializable
+    enum class Locale(val value: kotlin.String) {
+        @SerialName(value = "en") EN("en"),
+        @SerialName(value = "da") DA("da");
+    }
 
 }
 
