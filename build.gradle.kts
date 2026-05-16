@@ -140,7 +140,7 @@ publishing {
                     }
                 }
                 scm {
-                    url.set("https://github.com/Torii-ApS/torii")
+                    url.set("https://github.com/Torii-ApS/torii-sdk-java")
                 }
             }
         }
