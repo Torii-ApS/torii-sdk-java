@@ -1,3 +1,6 @@
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.JavaLibrary
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -5,7 +8,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
     id("org.openapi.generator") version "7.7.0"
     `java-library`
-    `maven-publish`
+    id("com.vanniktech.maven.publish") version "0.30.0"
 }
 
 group = "so.torii"
@@ -19,8 +22,7 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
-    withSourcesJar()
-    withJavadocJar()
+    // sources jar + javadoc jar are configured by `mavenPublishing { configure(JavaLibrary(...)) }` below.
 }
 
 kotlin {
@@ -132,32 +134,46 @@ tasks.withType<Test>().configureEach {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifactId = "torii-backend"
-            pom {
-                name.set("torii backend SDK")
-                description.set("Kotlin-first, Java-interoperable backend SDK for torii.")
-                url.set("https://torii.so")
-                licenses {
-                    license {
-                        name.set("MIT License")
-                        url.set("https://opensource.org/licenses/MIT")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("torii")
-                        name.set("torii")
-                        email.set("hello@torii.so")
-                    }
-                }
-                scm {
-                    url.set("https://github.com/Torii-ApS/torii-sdk-java")
-                }
+mavenPublishing {
+    // Central Portal is the new (post-OSSRH) upload path. automaticRelease = true
+    // means a successful upload progresses straight to public; flip to false to
+    // hold the staging in the Central Portal UI for manual release.
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    signAllPublications()
+
+    coordinates("so.torii", "torii-backend", version.toString())
+
+    // Auto-creates a maven publication from the java-library component and
+    // wires up the sources + javadoc jars (replaces the manual withSourcesJar/
+    // withJavadocJar calls).
+    configure(
+        JavaLibrary(
+            javadocJar = JavadocJar.Javadoc(),
+            sourcesJar = true,
+        ),
+    )
+
+    pom {
+        name.set("torii backend SDK")
+        description.set("Kotlin-first, Java-interoperable backend SDK for torii.")
+        url.set("https://torii.so")
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
             }
+        }
+        developers {
+            developer {
+                id.set("torii")
+                name.set("torii")
+                email.set("hello@torii.so")
+            }
+        }
+        scm {
+            url.set("https://github.com/Torii-ApS/torii-sdk-java")
+            connection.set("scm:git:git://github.com/Torii-ApS/torii-sdk-java.git")
+            developerConnection.set("scm:git:ssh://git@github.com/Torii-ApS/torii-sdk-java.git")
         }
     }
 }
