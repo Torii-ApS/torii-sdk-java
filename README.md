@@ -64,7 +64,7 @@ Kotlin-first, Java-interoperable backend SDK for [torii](https://torii.so) — v
    val user = torii.users.get(userId)
    ```
 
-   Default base URL is `https://api.torii.so`. Override for staging or self-hosted:
+   Default base URL is `https://api.torii.so`. Override for staging or testing environments:
 
    ```kotlin
    ToriiClient.create(secretKey = "...", apiUrl = "https://api.staging.torii.so")
