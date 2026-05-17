@@ -4,18 +4,22 @@ name: Release
 #
 # Prerequisites (one-time, see torii repo docs/Publishing-SDKs.md):
 #   1. Sonatype Central Portal account, namespace `so.torii` verified.
-#   2. GPG key generated, public key published to keys.openpgp.org.
-#   3. Repo secrets (Settings → Secrets and variables → Actions):
-#        - SONATYPE_TOKEN_USERNAME   (from Sonatype "Generate User Token")
-#        - SONATYPE_TOKEN_PASSWORD
-#        - GPG_PRIVATE_KEY           (ASCII-armored, full secret key)
-#        - GPG_PASSPHRASE
+#   2. GPG key generated, public key published to a keyserver
+#      (keyserver.ubuntu.com is what Sonatype checks).
+#   3. Repo secrets (Settings → Secrets and variables → Actions) — names
+#      match the Gradle property names vanniktech reads, so they pass
+#      through GitHub's case-insensitive secrets lookup directly into the
+#      env block below without remapping:
+#        - ORG_GRADLE_PROJECT_mavenCentralUsername    (Sonatype "Generate User Token")
+#        - ORG_GRADLE_PROJECT_mavenCentralPassword
+#        - ORG_GRADLE_PROJECT_signingInMemoryKey      (ASCII-armored secret key)
+#        - ORG_GRADLE_PROJECT_signingInMemoryKeyId    (long key ID, 16 hex)
+#        - ORG_GRADLE_PROJECT_signingInMemoryKeyPassword
 #   4. GitHub Environment `maven-central` with required reviewer approval.
 #
 # This workflow assumes `build.gradle.kts` uses the
 # `com.vanniktech.maven.publish` plugin (handles signing + Central Portal
-# upload in one task). See the same PR that introduced this workflow for
-# the gradle config change.
+# upload in one task).
 
 on:
   push:
@@ -54,14 +58,14 @@ jobs:
 
       - name: Publish to Maven Central
         env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_TOKEN_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_TOKEN_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_PRIVATE_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_PASSPHRASE }}
-        # publishAndReleaseToMavenCentral is the vanniktech-plugin task that
-        # signs, uploads, and triggers Central Portal release in one step.
-        # Falls back to publishToMavenCentral if you prefer a manual release
-        # gate via the Central Portal UI.
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
+        # publishAndReleaseToMavenCentral signs, uploads, and triggers
+        # Central Portal release in one step. Switch to publishToMavenCentral
+        # if you ever want manual release-gate via the Central Portal UI.
         run: ./gradlew --no-daemon --no-configuration-cache publishAndReleaseToMavenCentral
 
       - name: Create GitHub Release
