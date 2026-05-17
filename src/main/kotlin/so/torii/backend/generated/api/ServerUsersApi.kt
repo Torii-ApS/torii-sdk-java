@@ -49,7 +49,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:56602")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:52334")
         }
     }
 
@@ -198,7 +198,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Delete user
-     * Soft-deletes the user. Idempotent: returns 204 even if the user was already deleted.
+     * Soft-deletes the user. Not idempotent at the HTTP layer: the authorization grant for the user is revoked on the first successful delete, so a subsequent DELETE for the same id returns 403 rather than 204. Treat 403 from a retry as a confirmation that the user is already deleted.
      * @param userId Identifier of the user to delete.
      * @return void
      * @throws IllegalStateException If the request is not correctly configured
@@ -228,7 +228,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
 
     /**
      * Delete user
-     * Soft-deletes the user. Idempotent: returns 204 even if the user was already deleted.
+     * Soft-deletes the user. Not idempotent at the HTTP layer: the authorization grant for the user is revoked on the first successful delete, so a subsequent DELETE for the same id returns 403 rather than 204. Treat 403 from a retry as a confirmation that the user is already deleted.
      * @param userId Identifier of the user to delete.
      * @return ApiResponse<Unit?>
      * @throws IllegalStateException If the request is not correctly configured

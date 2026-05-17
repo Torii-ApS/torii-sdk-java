@@ -21,10 +21,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * Optional filter body for `POST /users/search`. Every field is tri-state: omit to skip that filter, send a value to require it, send JSON null to require null.
+ * Optional filter body for `POST /users/search`. Every field is tri-state: omit to skip that filter, send a value to require it. Fields whose inner type is nullable (currently `name`, `email`) additionally accept JSON null to filter for users where that column is null; the non-nullable `statuses` field rejects null.
  *
- * @param name Filter by name (exact match). Send null to require users with no name.
- * @param email Filter by primary email (exact match). Send null to require users with no email.
+ * @param name Filter by name (case-insensitive substring match). Send null to require users with no name.
+ * @param email Filter by primary email (case-insensitive substring match). Send null to require users with no email.
  * @param statuses Filter by user status. Returns users matching any of the supplied statuses.
  * @param createdAfter Only return users created at or after this instant (ISO-8601 UTC).
  * @param createdBefore Only return users created at or before this instant (ISO-8601 UTC).
@@ -33,11 +33,11 @@ import kotlinx.serialization.Contextual
 
 data class ServerUserSearchRequest (
 
-    /* Filter by name (exact match). Send null to require users with no name. */
+    /* Filter by name (case-insensitive substring match). Send null to require users with no name. */
     @SerialName(value = "name")
     val name: kotlin.String? = null,
 
-    /* Filter by primary email (exact match). Send null to require users with no email. */
+    /* Filter by primary email (case-insensitive substring match). Send null to require users with no email. */
     @SerialName(value = "email")
     val email: kotlin.String? = null,
 

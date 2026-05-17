@@ -22,7 +22,6 @@ import java.time.LocalDate
 public data class UpdateUserInput(
     val name: PatchValue<String?> = PatchValue.NotIncluded,
     val phone: PatchValue<String?> = PatchValue.NotIncluded,
-    val avatarUrl: PatchValue<String?> = PatchValue.NotIncluded,
     val locale: PatchValue<String?> = PatchValue.NotIncluded,
     val address: PatchValue<String?> = PatchValue.NotIncluded,
     val dateOfBirth: PatchValue<LocalDate?> = PatchValue.NotIncluded,
@@ -43,7 +42,6 @@ public data class UpdateUserInput(
 internal fun UpdateUserInput.toJsonObject(): JsonObject = buildJsonObject {
     putPatch("name", name) { JsonPrimitive(it) }
     putPatch("phone", phone) { JsonPrimitive(it) }
-    putPatch("avatarUrl", avatarUrl) { JsonPrimitive(it) }
     putPatch("locale", locale) { JsonPrimitive(it) }
     putPatch("address", address) { JsonPrimitive(it) }
     putPatch("dateOfBirth", dateOfBirth) { JsonPrimitive(it.toString()) }

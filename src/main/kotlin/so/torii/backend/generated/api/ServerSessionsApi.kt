@@ -45,7 +45,7 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:56602")
+            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:52334")
         }
     }
 

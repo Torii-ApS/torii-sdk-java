@@ -30,7 +30,6 @@ import kotlinx.serialization.Contextual
  * @param updatedAt When this user was last modified (ISO-8601 UTC).
  * @param name Full name on the profile, if any.
  * @param phone Phone number on the profile, if any. Not guaranteed to be verified.
- * @param avatarUrl URL of the user's avatar image, if any.
  * @param locale Preferred locale for emails and UI messages.
  * @param address Free-form address string, if provided.
  * @param dateOfBirth Date of birth in ISO-8601 (YYYY-MM-DD), if provided.
@@ -68,10 +67,6 @@ data class UserResponse (
     /* Phone number on the profile, if any. Not guaranteed to be verified. */
     @SerialName(value = "phone")
     val phone: kotlin.String? = null,
-
-    /* URL of the user's avatar image, if any. */
-    @SerialName(value = "avatarUrl")
-    val avatarUrl: kotlin.String? = null,
 
     /* Preferred locale for emails and UI messages. */
     @SerialName(value = "locale")

@@ -25,7 +25,6 @@ import kotlinx.serialization.Contextual
  *
  * @param name New display name. Send null to clear; omit to leave unchanged.
  * @param phone New phone number. Send null to clear; omit to leave unchanged.
- * @param avatarUrl New avatar URL. Send null to clear; omit to leave unchanged.
  * @param locale New preferred locale. Send null to clear; omit to leave unchanged.
  * @param address New postal address. Send null to clear; omit to leave unchanged.
  * @param dateOfBirth New date of birth (YYYY-MM-DD). Send null to clear; omit to leave unchanged.
@@ -41,10 +40,6 @@ data class UpdateUserRequest (
     /* New phone number. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "phone")
     val phone: kotlin.String? = null,
-
-    /* New avatar URL. Send null to clear; omit to leave unchanged. */
-    @SerialName(value = "avatarUrl")
-    val avatarUrl: kotlin.String? = null,
 
     /* New preferred locale. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "locale")
