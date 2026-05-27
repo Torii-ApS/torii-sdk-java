@@ -288,7 +288,6 @@ private val patchJson: Json = so.torii.backend.generated.infrastructure.Serializ
 private fun mapStatusToSearch(
     status: UserStatus,
 ): ServerUserSearchRequest.Statuses = when (status) {
-    UserResponse.Status.PENDING_VERIFICATION -> ServerUserSearchRequest.Statuses.PENDING_VERIFICATION
     UserResponse.Status.ACTIVE -> ServerUserSearchRequest.Statuses.ACTIVE
     UserResponse.Status.BANNED -> ServerUserSearchRequest.Statuses.BANNED
     UserResponse.Status.DELETED -> ServerUserSearchRequest.Statuses.DELETED
