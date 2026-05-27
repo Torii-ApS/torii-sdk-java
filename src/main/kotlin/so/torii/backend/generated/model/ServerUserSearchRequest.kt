@@ -58,11 +58,10 @@ data class ServerUserSearchRequest (
     /**
      * Filter by user status. Returns users matching any of the supplied statuses.
      *
-     * Values: PENDING_VERIFICATION,ACTIVE,BANNED,DELETED
+     * Values: ACTIVE,BANNED,DELETED
      */
     @Serializable
     enum class Statuses(val value: kotlin.String) {
-        @SerialName(value = "pending_verification") PENDING_VERIFICATION("pending_verification"),
         @SerialName(value = "active") ACTIVE("active"),
         @SerialName(value = "banned") BANNED("banned"),
         @SerialName(value = "deleted") DELETED("deleted");

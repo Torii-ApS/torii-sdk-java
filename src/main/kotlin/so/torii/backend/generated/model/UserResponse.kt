@@ -34,6 +34,7 @@ import kotlinx.serialization.Contextual
  * @param address Free-form address string, if provided.
  * @param dateOfBirth Date of birth in ISO-8601 (YYYY-MM-DD), if provided.
  * @param email Primary email on the profile, if any. Not guaranteed to be verified.
+ * @param emailVerifiedAt When this user's primary email was verified, if it has been verified.
  * @param deletedAt When this user was deleted, if soft-deleted. Null for active users.
  */
 @Serializable
@@ -84,6 +85,10 @@ data class UserResponse (
     @SerialName(value = "email")
     val email: kotlin.String? = null,
 
+    /* When this user's primary email was verified, if it has been verified. */
+    @Contextual @SerialName(value = "emailVerifiedAt")
+    val emailVerifiedAt: java.time.OffsetDateTime? = null,
+
     /* When this user was deleted, if soft-deleted. Null for active users. */
     @Contextual @SerialName(value = "deletedAt")
     val deletedAt: java.time.OffsetDateTime? = null
@@ -93,11 +98,10 @@ data class UserResponse (
     /**
      * Lifecycle status of the user (e.g. active, banned).
      *
-     * Values: PENDING_VERIFICATION,ACTIVE,BANNED,DELETED
+     * Values: ACTIVE,BANNED,DELETED
      */
     @Serializable
     enum class Status(val value: kotlin.String) {
-        @SerialName(value = "pending_verification") PENDING_VERIFICATION("pending_verification"),
         @SerialName(value = "active") ACTIVE("active"),
         @SerialName(value = "banned") BANNED("banned"),
         @SerialName(value = "deleted") DELETED("deleted");

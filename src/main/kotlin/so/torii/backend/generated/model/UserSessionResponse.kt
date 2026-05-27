@@ -31,6 +31,7 @@ import kotlinx.serialization.Contextual
  * @param lastUsedAt When this session was last seen by the API (ISO-8601 UTC).
  * @param userAgent Raw User-Agent string captured when the session was created.
  * @param ipAddress IP address captured when the session was created.
+ * @param activeOrganizationId Active organization pinned to this session (`org_id` claim on re-mint).
  */
 @Serializable
 
@@ -66,7 +67,11 @@ data class UserSessionResponse (
 
     /* IP address captured when the session was created. */
     @SerialName(value = "ipAddress")
-    val ipAddress: kotlin.String? = null
+    val ipAddress: kotlin.String? = null,
+
+    /* Active organization pinned to this session (`org_id` claim on re-mint). */
+    @Contextual @SerialName(value = "activeOrganizationId")
+    val activeOrganizationId: java.util.UUID? = null
 
 ) {
 
