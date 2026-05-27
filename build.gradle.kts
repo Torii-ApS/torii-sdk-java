@@ -139,7 +139,17 @@ mavenPublishing {
     // means a successful upload progresses straight to public; flip to false to
     // hold the staging in the Central Portal UI for manual release.
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
-    signAllPublications()
+    // Sign only when a GPG key is configured. Without this guard,
+    // `publishToMavenLocal` in environments without signing keys (CI, the
+    // contract-test smoke Dockerfile) fails with "no configured signatory"
+    // because the publication insists on the .asc artifacts even when the
+    // sign tasks are excluded. Central-Portal releases set the standard
+    // `signing.*` gradle properties via secrets and stay signed.
+    if (project.findProperty("signing.keyId") != null ||
+        project.findProperty("signing.gnupg.keyName") != null ||
+        System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKey") != null) {
+        signAllPublications()
+    }
 
     coordinates("so.torii", "torii-backend", version.toString())
 
