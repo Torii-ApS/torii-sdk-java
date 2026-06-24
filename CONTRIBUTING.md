@@ -20,7 +20,7 @@ cd torii-sdk-java
 ./gradlew build
 ```
 
-The REST client lives under `src/main/kotlin/so/torii/backend/generated/` and is produced by the [`org.openapi.generator`](https://openapi-generator.tech/) Gradle plugin from `spec/server-v1.json`. It **is** checked in (matching the layout of the other torii SDKs; the client is browsable on GitHub). Don't hand-edit it. Regenerate after a spec bump by running:
+The REST client lives under `src/main/kotlin/so/torii/backend/generated/` and is produced by the [`org.openapi.generator`](https://openapi-generator.tech/) Gradle plugin from `spec/server-v1.json`. It **is** checked in (matching the layout of the other torii SDKs; the client is browsable on GitHub). Don't hand-edit it. Run `./regen.sh` to regenerate it (it encapsulates the steps below). Regenerate after a spec bump by running:
 
 ```sh
 ./gradlew regenerateOpenApi
