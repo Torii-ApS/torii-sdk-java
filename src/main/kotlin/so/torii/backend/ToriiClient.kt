@@ -175,9 +175,9 @@ constructor(
     val firstName: String? = null,
     val lastName: String? = null,
     // Metadata bags — optional; default to empty {} on send (a new user has none to clobber).
-    val publicMetadata: Map<String, Any>? = null,
-    val privateMetadata: Map<String, Any>? = null,
-    val unsafeMetadata: Map<String, Any>? = null,
+    val publicMetadata: JsonObject? = null,
+    val privateMetadata: JsonObject? = null,
+    val unsafeMetadata: JsonObject? = null,
 )
 
 public class UsersClient internal constructor(
@@ -217,9 +217,9 @@ public class UsersClient internal constructor(
 
     public fun create(input: CreateUserInput): User {
         val body = CreateUserRequest(
-            publicMetadata = input.publicMetadata ?: emptyMap(),
-            privateMetadata = input.privateMetadata ?: emptyMap(),
-            unsafeMetadata = input.unsafeMetadata ?: emptyMap(),
+            publicMetadata = input.publicMetadata ?: JsonObject(emptyMap()),
+            privateMetadata = input.privateMetadata ?: JsonObject(emptyMap()),
+            unsafeMetadata = input.unsafeMetadata ?: JsonObject(emptyMap()),
             email = input.email,
             password = input.password,
             firstName = input.firstName,

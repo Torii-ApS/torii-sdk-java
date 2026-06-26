@@ -87,17 +87,20 @@ tasks.register<Sync>("regenerateOpenApi") {
     into(generatedSourcesDir)
     doLast {
         // kotlinx.serialization can't synthesise a serializer for `kotlin.Any`,
-        // so rewrite the one place the kotlin generator emits it
-        // (ProblemDetail.properties: Map<String, Object> in the spec) to use
-        // JsonElement instead. Idempotent: a no-op once already rewritten.
-        val problemDetail = file("$generatedSourcesDir/model/ProblemDetail.kt")
-        if (problemDetail.exists()) {
-            val text = problemDetail.readText()
+        // so the kotlin generator's `@Contextual Map<String, kotlin.Any>` for
+        // every free-form object property (additionalProperties: true — e.g.
+        // ProblemDetail.properties and the user metadata bags) crashes the
+        // serialization compiler backend at compile time. Rewrite the value
+        // type to JsonElement (which has a first-class serializer) across every
+        // generated model. Idempotent: a no-op once already rewritten.
+        val modelDir = file("$generatedSourcesDir/model")
+        modelDir.listFiles { f -> f.isFile && f.extension == "kt" }?.forEach { f ->
+            val text = f.readText()
             val patched = text.replace(
                 "kotlin.collections.Map<kotlin.String, kotlin.Any>",
                 "kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>",
             )
-            if (patched != text) problemDetail.writeText(patched)
+            if (patched != text) f.writeText(patched)
         }
     }
 }

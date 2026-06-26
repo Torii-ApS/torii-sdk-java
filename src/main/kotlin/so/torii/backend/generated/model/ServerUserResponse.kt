@@ -73,15 +73,15 @@ data class ServerUserResponse (
 
     /* Public metadata: readable by the SDK, writable only server-side. */
     @Contextual @SerialName(value = "publicMetadata")
-    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Private metadata: server-only. Never exposed to the SDK or in a JWT. */
     @Contextual @SerialName(value = "privateMetadata")
-    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Unsafe metadata: readable and writable by the end-user via the SDK. */
     @Contextual @SerialName(value = "unsafeMetadata")
-    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Full name on the profile, if any. */
     @SerialName(value = "name")

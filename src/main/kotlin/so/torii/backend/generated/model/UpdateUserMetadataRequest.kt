@@ -41,15 +41,15 @@ data class UpdateUserMetadataRequest (
 
     /* Public metadata bag: SDK-readable, server-written. Max 512 bytes. */
     @Contextual @SerialName(value = "publicMetadata")
-    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>? = null,
+    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
 
     /* Private metadata bag: server-only, never exposed to the SDK or in a JWT. Max 4096 bytes. */
     @Contextual @SerialName(value = "privateMetadata")
-    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>? = null,
+    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
 
     /* Unsafe metadata bag: readable and writable by the end-user via the SDK. Max 512 bytes. */
     @Contextual @SerialName(value = "unsafeMetadata")
-    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>? = null
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
 
 ) {
 

@@ -54,7 +54,7 @@ data class UpdateUserRequest (
 
     /* Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Merged result max 512 bytes. */
     @Contextual @SerialName(value = "unsafeMetadata")
-    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>? = null
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
 
 ) {
 

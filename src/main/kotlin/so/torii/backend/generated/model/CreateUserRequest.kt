@@ -45,15 +45,15 @@ data class CreateUserRequest (
 
     /* Initial public metadata (SDK-readable, server-written). Max 512 bytes. */
     @Contextual @SerialName(value = "publicMetadata")
-    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Initial private metadata (server-only). Max 4096 bytes. */
     @Contextual @SerialName(value = "privateMetadata")
-    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Initial unsafe metadata (end-user writable). Max 512 bytes. */
     @Contextual @SerialName(value = "unsafeMetadata")
-    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Primary email for the new user. If omitted, the user is created without a sign-in identity. */
     @SerialName(value = "email")
