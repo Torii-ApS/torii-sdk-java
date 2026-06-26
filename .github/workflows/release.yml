@@ -1,0 +1,77 @@
+name: Release
+
+# Tag-triggered Maven Central publish via Sonatype Central Portal.
+#
+# Prerequisites (one-time, see torii repo docs/Publishing-SDKs.md):
+#   1. Sonatype Central Portal account, namespace `so.torii` verified.
+#   2. GPG key generated, public key published to a keyserver
+#      (keyserver.ubuntu.com is what Sonatype checks).
+#   3. Repo secrets (Settings → Secrets and variables → Actions) — names
+#      match the Gradle property names vanniktech reads, so they pass
+#      through GitHub's case-insensitive secrets lookup directly into the
+#      env block below without remapping:
+#        - ORG_GRADLE_PROJECT_mavenCentralUsername    (Sonatype "Generate User Token")
+#        - ORG_GRADLE_PROJECT_mavenCentralPassword
+#        - ORG_GRADLE_PROJECT_signingInMemoryKey      (ASCII-armored secret key)
+#        - ORG_GRADLE_PROJECT_signingInMemoryKeyId    (long key ID, 16 hex)
+#        - ORG_GRADLE_PROJECT_signingInMemoryKeyPassword
+#   4. GitHub Environment `maven-central` with required reviewer approval.
+#
+# This workflow assumes `build.gradle.kts` uses the
+# `com.vanniktech.maven.publish` plugin (handles signing + Central Portal
+# upload in one task).
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write  # for GH release creation
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: maven-central
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Assert tag matches build.gradle.kts version
+        run: |
+          GRADLE_VERSION=$(./gradlew --no-daemon -q properties --property version | grep '^version:' | awk '{print $2}')
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$GRADLE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match Gradle version ${GRADLE_VERSION}" >&2
+            exit 1
+          fi
+
+      - name: Test on tagged SHA
+        run: ./gradlew --no-daemon test
+
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALUSERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.ORG_GRADLE_PROJECT_MAVENCENTRALPASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGINMEMORYKEYPASSWORD }}
+        # publishAndReleaseToMavenCentral signs, uploads, and triggers
+        # Central Portal release in one step. Switch to publishToMavenCentral
+        # if you ever want manual release-gate via the Central Portal UI.
+        run: ./gradlew --no-daemon --no-configuration-cache publishAndReleaseToMavenCentral
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
