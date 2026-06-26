@@ -1,14 +1,13 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.JavaLibrary
-import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.serialization") version "2.0.21"
-    id("org.openapi.generator") version "7.7.0"
+    id("org.openapi.generator") version "7.23.0"
     `java-library`
-    id("com.vanniktech.maven.publish") version "0.30.0"
+    id("com.vanniktech.maven.publish") version "0.37.0"
 }
 
 group = "so.torii"
@@ -138,7 +137,7 @@ mavenPublishing {
     // Central Portal is the new (post-OSSRH) upload path. automaticRelease = true
     // means a successful upload progresses straight to public; flip to false to
     // hold the staging in the Central Portal UI for manual release.
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+    publishToMavenCentral(automaticRelease = true)
     // Sign only when a GPG key is configured. Without this guard,
     // `publishToMavenLocal` in environments without signing keys (CI, the
     // contract-test smoke Dockerfile) fails with "no configured signatory"
