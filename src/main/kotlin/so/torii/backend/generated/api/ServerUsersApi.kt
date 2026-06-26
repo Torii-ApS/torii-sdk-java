@@ -8,23 +8,32 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.api
 
 import java.io.IOException
-import okhttp3.OkHttpClient
+import okhttp3.Call
 import okhttp3.HttpUrl
 
 import so.torii.backend.generated.model.CreateUserRequest
-import so.torii.backend.generated.model.CursorPageResponseUserResponse
+import so.torii.backend.generated.model.CursorPageResponseServerUserResponse
 import so.torii.backend.generated.model.ProblemDetail
+import so.torii.backend.generated.model.ServerUserResponse
 import so.torii.backend.generated.model.ServerUserSearchRequest
+import so.torii.backend.generated.model.UpdateUserMetadataRequest
 import so.torii.backend.generated.model.UpdateUserRequest
-import so.torii.backend.generated.model.UserResponse
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -44,20 +53,22 @@ import so.torii.backend.generated.infrastructure.RequestMethod
 import so.torii.backend.generated.infrastructure.ResponseType
 import so.torii.backend.generated.infrastructure.Success
 import so.torii.backend.generated.infrastructure.toMultiValue
+import so.torii.backend.generated.infrastructure.Serializer
 
-class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = ApiClient.defaultClient) : ApiClient(basePath, client) {
+open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Call.Factory = ApiClient.defaultClient) : ApiClient(basePath, client) {
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:50385")
+            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.torii.so")
         }
     }
 
     /**
+     * POST /api/server/v1/users/{userId}/ban
      * Ban user
      * Marks the user as banned and revokes all their active sessions.
      * @param userId Identifier of the user to ban.
-     * @return UserResponse
+     * @return ServerUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -66,11 +77,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun banUser(userId: java.util.UUID) : UserResponse = withContext(Dispatchers.IO) {
+    suspend fun banUser(userId: java.util.UUID) : ServerUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = banUserWithHttpInfo(userId = userId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ServerUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -85,19 +96,20 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users/{userId}/ban
      * Ban user
      * Marks the user as banned and revokes all their active sessions.
      * @param userId Identifier of the user to ban.
-     * @return ApiResponse<UserResponse?>
+     * @return ApiResponse<ServerUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun banUserWithHttpInfo(userId: java.util.UUID) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun banUserWithHttpInfo(userId: java.util.UUID) : ApiResponse<ServerUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = banUserRequestConfig(userId = userId)
 
-        return@withContext request<Unit, UserResponse>(
+        return@withContext request<Unit, ServerUserResponse>(
             localVariableConfig
         )
     }
@@ -125,10 +137,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users
      * Create user
      * Creates an end-user in your environment. All body fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
      * @param createUserRequest 
-     * @return UserResponse
+     * @return ServerUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -137,11 +150,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun createUser(createUserRequest: CreateUserRequest) : UserResponse = withContext(Dispatchers.IO) {
+    suspend fun createUser(createUserRequest: CreateUserRequest) : ServerUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = createUserWithHttpInfo(createUserRequest = createUserRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ServerUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -156,19 +169,20 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users
      * Create user
      * Creates an end-user in your environment. All body fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
      * @param createUserRequest 
-     * @return ApiResponse<UserResponse?>
+     * @return ApiResponse<ServerUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun createUserWithHttpInfo(createUserRequest: CreateUserRequest) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun createUserWithHttpInfo(createUserRequest: CreateUserRequest) : ApiResponse<ServerUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = createUserRequestConfig(createUserRequest = createUserRequest)
 
-        return@withContext request<CreateUserRequest, UserResponse>(
+        return@withContext request<CreateUserRequest, ServerUserResponse>(
             localVariableConfig
         )
     }
@@ -197,6 +211,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * DELETE /api/server/v1/users/{userId}
      * Delete user
      * Soft-deletes the user. Not idempotent at the HTTP layer: the authorization grant for the user is revoked on the first successful delete, so a subsequent DELETE for the same id returns 403 rather than 204. Treat 403 from a retry as a confirmation that the user is already deleted.
      * @param userId Identifier of the user to delete.
@@ -227,6 +242,7 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * DELETE /api/server/v1/users/{userId}
      * Delete user
      * Soft-deletes the user. Not idempotent at the HTTP layer: the authorization grant for the user is revoked on the first successful delete, so a subsequent DELETE for the same id returns 403 rather than 204. Treat 403 from a retry as a confirmation that the user is already deleted.
      * @param userId Identifier of the user to delete.
@@ -266,10 +282,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * GET /api/server/v1/users/{userId}
      * Get user
      * Returns the full profile for one end-user.
      * @param userId Identifier of the user to fetch.
-     * @return UserResponse
+     * @return ServerUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -278,11 +295,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun getUser(userId: java.util.UUID) : UserResponse = withContext(Dispatchers.IO) {
+    suspend fun getUser(userId: java.util.UUID) : ServerUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getUserWithHttpInfo(userId = userId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ServerUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -297,19 +314,20 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * GET /api/server/v1/users/{userId}
      * Get user
      * Returns the full profile for one end-user.
      * @param userId Identifier of the user to fetch.
-     * @return ApiResponse<UserResponse?>
+     * @return ApiResponse<ServerUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getUserWithHttpInfo(userId: java.util.UUID) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun getUserWithHttpInfo(userId: java.util.UUID) : ApiResponse<ServerUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getUserRequestConfig(userId = userId)
 
-        return@withContext request<Unit, UserResponse>(
+        return@withContext request<Unit, ServerUserResponse>(
             localVariableConfig
         )
     }
@@ -337,12 +355,13 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users/search
      * Search users
      * Returns a cursor-paginated page of end-users in the environment matching the optional filters. Filters use the same tri-state PATCH semantics as &#x60;UpdateUserRequest&#x60;: omit a field to skip that filter, send a value to require it, send null to require null. Uses POST so the filter body can be sent without URL-encoding.
      * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
      * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
      * @param serverUserSearchRequest  (optional)
-     * @return CursorPageResponseUserResponse
+     * @return CursorPageResponseServerUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -351,11 +370,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun searchUsers(limit: kotlin.Int? = 20, cursor: java.util.UUID? = null, serverUserSearchRequest: ServerUserSearchRequest? = null) : CursorPageResponseUserResponse = withContext(Dispatchers.IO) {
+    suspend fun searchUsers(limit: kotlin.Int? = 20, cursor: java.util.UUID? = null, serverUserSearchRequest: ServerUserSearchRequest? = null) : CursorPageResponseServerUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = searchUsersWithHttpInfo(limit = limit, cursor = cursor, serverUserSearchRequest = serverUserSearchRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as CursorPageResponseUserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CursorPageResponseServerUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -370,21 +389,22 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users/search
      * Search users
      * Returns a cursor-paginated page of end-users in the environment matching the optional filters. Filters use the same tri-state PATCH semantics as &#x60;UpdateUserRequest&#x60;: omit a field to skip that filter, send a value to require it, send null to require null. Uses POST so the filter body can be sent without URL-encoding.
      * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
      * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
      * @param serverUserSearchRequest  (optional)
-     * @return ApiResponse<CursorPageResponseUserResponse?>
+     * @return ApiResponse<CursorPageResponseServerUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun searchUsersWithHttpInfo(limit: kotlin.Int?, cursor: java.util.UUID?, serverUserSearchRequest: ServerUserSearchRequest?) : ApiResponse<CursorPageResponseUserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun searchUsersWithHttpInfo(limit: kotlin.Int?, cursor: java.util.UUID?, serverUserSearchRequest: ServerUserSearchRequest?) : ApiResponse<CursorPageResponseServerUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = searchUsersRequestConfig(limit = limit, cursor = cursor, serverUserSearchRequest = serverUserSearchRequest)
 
-        return@withContext request<ServerUserSearchRequest, CursorPageResponseUserResponse>(
+        return@withContext request<ServerUserSearchRequest, CursorPageResponseServerUserResponse>(
             localVariableConfig
         )
     }
@@ -423,10 +443,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users/{userId}/unban
      * Unban user
      * Reverses a previous ban. The user can sign in again on next request.
      * @param userId Identifier of the user to unban.
-     * @return UserResponse
+     * @return ServerUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -435,11 +456,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun unbanUser(userId: java.util.UUID) : UserResponse = withContext(Dispatchers.IO) {
+    suspend fun unbanUser(userId: java.util.UUID) : ServerUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = unbanUserWithHttpInfo(userId = userId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ServerUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -454,19 +475,20 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * POST /api/server/v1/users/{userId}/unban
      * Unban user
      * Reverses a previous ban. The user can sign in again on next request.
      * @param userId Identifier of the user to unban.
-     * @return ApiResponse<UserResponse?>
+     * @return ApiResponse<ServerUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun unbanUserWithHttpInfo(userId: java.util.UUID) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun unbanUserWithHttpInfo(userId: java.util.UUID) : ApiResponse<ServerUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = unbanUserRequestConfig(userId = userId)
 
-        return@withContext request<Unit, UserResponse>(
+        return@withContext request<Unit, ServerUserResponse>(
             localVariableConfig
         )
     }
@@ -494,11 +516,12 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * PATCH /api/server/v1/users/{userId}
      * Update user
      * Partial update with tri-state PATCH semantics. Every field in &#x60;UpdateUserRequest&#x60; is tri-state: omit the key to leave the field unchanged, send a non-null value to set it, or send JSON null to clear it.
      * @param userId Identifier of the user to update.
      * @param updateUserRequest 
-     * @return UserResponse
+     * @return ServerUserResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -507,11 +530,11 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun updateUser(userId: java.util.UUID, updateUserRequest: UpdateUserRequest) : UserResponse = withContext(Dispatchers.IO) {
+    suspend fun updateUser(userId: java.util.UUID, updateUserRequest: UpdateUserRequest) : ServerUserResponse = withContext(Dispatchers.IO) {
         val localVarResponse = updateUserWithHttpInfo(userId = userId, updateUserRequest = updateUserRequest)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as UserResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ServerUserResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -526,20 +549,21 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
     }
 
     /**
+     * PATCH /api/server/v1/users/{userId}
      * Update user
      * Partial update with tri-state PATCH semantics. Every field in &#x60;UpdateUserRequest&#x60; is tri-state: omit the key to leave the field unchanged, send a non-null value to set it, or send JSON null to clear it.
      * @param userId Identifier of the user to update.
      * @param updateUserRequest 
-     * @return ApiResponse<UserResponse?>
+     * @return ApiResponse<ServerUserResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun updateUserWithHttpInfo(userId: java.util.UUID, updateUserRequest: UpdateUserRequest) : ApiResponse<UserResponse?> = withContext(Dispatchers.IO) {
+    suspend fun updateUserWithHttpInfo(userId: java.util.UUID, updateUserRequest: UpdateUserRequest) : ApiResponse<ServerUserResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = updateUserRequestConfig(userId = userId, updateUserRequest = updateUserRequest)
 
-        return@withContext request<UpdateUserRequest, UserResponse>(
+        return@withContext request<UpdateUserRequest, ServerUserResponse>(
             localVariableConfig
         )
     }
@@ -561,6 +585,83 @@ class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: OkHttpCl
         return RequestConfig(
             method = RequestMethod.PATCH,
             path = "/api/server/v1/users/{userId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * PATCH /api/server/v1/users/{userId}/metadata
+     * Update user metadata
+     * Deep-merges into any of the three metadata bags. Each bag is tri-state: omit the key to leave the bag unchanged, or send an object to deep-merge into the existing bag (a key set to null removes it). The merged result is capped at 512 bytes for &#x60;publicMetadata&#x60;/&#x60;unsafeMetadata&#x60; and 4096 bytes for &#x60;privateMetadata&#x60;.
+     * @param userId Identifier of the user to update.
+     * @param updateUserMetadataRequest 
+     * @return ServerUserResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun updateUserMetadata(userId: java.util.UUID, updateUserMetadataRequest: UpdateUserMetadataRequest) : ServerUserResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = updateUserMetadataWithHttpInfo(userId = userId, updateUserMetadataRequest = updateUserMetadataRequest)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as ServerUserResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * PATCH /api/server/v1/users/{userId}/metadata
+     * Update user metadata
+     * Deep-merges into any of the three metadata bags. Each bag is tri-state: omit the key to leave the bag unchanged, or send an object to deep-merge into the existing bag (a key set to null removes it). The merged result is capped at 512 bytes for &#x60;publicMetadata&#x60;/&#x60;unsafeMetadata&#x60; and 4096 bytes for &#x60;privateMetadata&#x60;.
+     * @param userId Identifier of the user to update.
+     * @param updateUserMetadataRequest 
+     * @return ApiResponse<ServerUserResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun updateUserMetadataWithHttpInfo(userId: java.util.UUID, updateUserMetadataRequest: UpdateUserMetadataRequest) : ApiResponse<ServerUserResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = updateUserMetadataRequestConfig(userId = userId, updateUserMetadataRequest = updateUserMetadataRequest)
+
+        return@withContext request<UpdateUserMetadataRequest, ServerUserResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation updateUserMetadata
+     *
+     * @param userId Identifier of the user to update.
+     * @param updateUserMetadataRequest 
+     * @return RequestConfig
+     */
+    fun updateUserMetadataRequestConfig(userId: java.util.UUID, updateUserMetadataRequest: UpdateUserMetadataRequest) : RequestConfig<UpdateUserMetadataRequest> {
+        val localVariableBody = updateUserMetadataRequest
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
+
+        return RequestConfig(
+            method = RequestMethod.PATCH,
+            path = "/api/server/v1/users/{userId}/metadata".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = false,

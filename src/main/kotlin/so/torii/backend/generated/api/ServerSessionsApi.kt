@@ -8,15 +8,23 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.api
 
 import java.io.IOException
-import okhttp3.OkHttpClient
+import okhttp3.Call
 import okhttp3.HttpUrl
 
 import so.torii.backend.generated.model.ProblemDetail
@@ -40,16 +48,18 @@ import so.torii.backend.generated.infrastructure.RequestMethod
 import so.torii.backend.generated.infrastructure.ResponseType
 import so.torii.backend.generated.infrastructure.Success
 import so.torii.backend.generated.infrastructure.toMultiValue
+import so.torii.backend.generated.infrastructure.Serializer
 
-class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHttpClient = ApiClient.defaultClient) : ApiClient(basePath, client) {
+open class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: Call.Factory = ApiClient.defaultClient) : ApiClient(basePath, client) {
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.baseUrlKey, "http://localhost:50385")
+            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.torii.so")
         }
     }
 
     /**
+     * GET /api/server/v1/users/{userId}/sessions
      * List user sessions
      * Returns all active (unexpired, unrevoked) sessions for the user, ordered by most recently used.
      * @param userId Identifier of the user whose sessions to list.
@@ -81,6 +91,7 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     }
 
     /**
+     * GET /api/server/v1/users/{userId}/sessions
      * List user sessions
      * Returns all active (unexpired, unrevoked) sessions for the user, ordered by most recently used.
      * @param userId Identifier of the user whose sessions to list.
@@ -121,6 +132,7 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     }
 
     /**
+     * DELETE /api/server/v1/users/{userId}/sessions
      * Revoke all sessions
      * Immediately revokes every active session for the user. Idempotent.
      * @param userId Identifier of the user whose sessions to revoke.
@@ -151,6 +163,7 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     }
 
     /**
+     * DELETE /api/server/v1/users/{userId}/sessions
      * Revoke all sessions
      * Immediately revokes every active session for the user. Idempotent.
      * @param userId Identifier of the user whose sessions to revoke.
@@ -190,6 +203,7 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     }
 
     /**
+     * DELETE /api/server/v1/users/{userId}/sessions/{sessionId}
      * Revoke specific session
      * Revokes a single session by id. Idempotent: returns 204 even if the session was already revoked or expired.
      * @param userId Identifier of the user who owns the session.
@@ -221,6 +235,7 @@ class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: OkHtt
     }
 
     /**
+     * DELETE /api/server/v1/users/{userId}/sessions/{sessionId}
      * Revoke specific session
      * Revokes a single session by id. Idempotent: returns 204 even if the session was already revoked or expired.
      * @param userId Identifier of the user who owns the session.

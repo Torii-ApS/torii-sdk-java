@@ -31,34 +31,14 @@ import kotlinx.serialization.Contextual
 /**
  * 
  *
- * @param type 
- * @param title 
- * @param status 
- * @param detail 
- * @param instance 
- * @param properties 
+ * @param origins 
  */
 @Serializable
 
-data class ProblemDetail (
+data class AllowedOriginsResponse (
 
-    @Contextual @SerialName(value = "type")
-    val type: java.net.URI? = null,
-
-    @SerialName(value = "title")
-    val title: kotlin.String? = null,
-
-    @SerialName(value = "status")
-    val status: kotlin.Int? = null,
-
-    @SerialName(value = "detail")
-    val detail: kotlin.String? = null,
-
-    @Contextual @SerialName(value = "instance")
-    val instance: java.net.URI? = null,
-
-    @Contextual @SerialName(value = "properties")
-    val properties: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
+    @SerialName(value = "origins")
+    val origins: kotlin.collections.List<kotlin.String>
 
 ) {
 

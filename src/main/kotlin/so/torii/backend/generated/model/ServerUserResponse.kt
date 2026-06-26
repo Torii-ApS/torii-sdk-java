@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.model
@@ -21,25 +29,27 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * An end-user belonging to one of your environments.
+ * An end-user, including server-only private metadata. Returned only on the secret-key backend API.
  *
  * @param id Unique identifier for this user.
  * @param environmentId Identifier of the environment this user belongs to.
  * @param status Lifecycle status of the user (e.g. active, banned).
  * @param createdAt When this user was created (ISO-8601 UTC).
  * @param updatedAt When this user was last modified (ISO-8601 UTC).
+ * @param publicMetadata Public metadata: readable by the SDK, writable only server-side.
+ * @param privateMetadata Private metadata: server-only. Never exposed to the SDK or in a JWT.
+ * @param unsafeMetadata Unsafe metadata: readable and writable by the end-user via the SDK.
  * @param name Full name on the profile, if any.
- * @param phone Phone number on the profile, if any. Not guaranteed to be verified.
+ * @param firstName First (given) name on the profile, if any.
+ * @param lastName Last (family) name on the profile, if any.
  * @param locale Preferred locale for emails and UI messages.
- * @param address Free-form address string, if provided.
- * @param dateOfBirth Date of birth in ISO-8601 (YYYY-MM-DD), if provided.
- * @param email Primary email on the profile, if any. Not guaranteed to be verified.
+ * @param email Primary email on the profile, if any.
  * @param emailVerifiedAt When this user's primary email was verified, if it has been verified.
  * @param deletedAt When this user was deleted, if soft-deleted. Null for active users.
  */
 @Serializable
 
-data class UserResponse (
+data class ServerUserResponse (
 
     /* Unique identifier for this user. */
     @Contextual @SerialName(value = "id")
@@ -51,7 +61,7 @@ data class UserResponse (
 
     /* Lifecycle status of the user (e.g. active, banned). */
     @SerialName(value = "status")
-    val status: UserResponse.Status,
+    val status: ServerUserResponse.Status,
 
     /* When this user was created (ISO-8601 UTC). */
     @Contextual @SerialName(value = "createdAt")
@@ -61,27 +71,35 @@ data class UserResponse (
     @Contextual @SerialName(value = "updatedAt")
     val updatedAt: java.time.OffsetDateTime,
 
+    /* Public metadata: readable by the SDK, writable only server-side. */
+    @Contextual @SerialName(value = "publicMetadata")
+    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+
+    /* Private metadata: server-only. Never exposed to the SDK or in a JWT. */
+    @Contextual @SerialName(value = "privateMetadata")
+    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+
+    /* Unsafe metadata: readable and writable by the end-user via the SDK. */
+    @Contextual @SerialName(value = "unsafeMetadata")
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+
     /* Full name on the profile, if any. */
     @SerialName(value = "name")
     val name: kotlin.String? = null,
 
-    /* Phone number on the profile, if any. Not guaranteed to be verified. */
-    @SerialName(value = "phone")
-    val phone: kotlin.String? = null,
+    /* First (given) name on the profile, if any. */
+    @SerialName(value = "firstName")
+    val firstName: kotlin.String? = null,
+
+    /* Last (family) name on the profile, if any. */
+    @SerialName(value = "lastName")
+    val lastName: kotlin.String? = null,
 
     /* Preferred locale for emails and UI messages. */
     @SerialName(value = "locale")
-    val locale: UserResponse.Locale? = null,
+    val locale: ServerUserResponse.Locale? = null,
 
-    /* Free-form address string, if provided. */
-    @SerialName(value = "address")
-    val address: kotlin.String? = null,
-
-    /* Date of birth in ISO-8601 (YYYY-MM-DD), if provided. */
-    @Contextual @SerialName(value = "dateOfBirth")
-    val dateOfBirth: java.time.LocalDate? = null,
-
-    /* Primary email on the profile, if any. Not guaranteed to be verified. */
+    /* Primary email on the profile, if any. */
     @SerialName(value = "email")
     val email: kotlin.String? = null,
 

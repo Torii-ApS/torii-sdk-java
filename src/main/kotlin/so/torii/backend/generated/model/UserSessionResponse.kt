@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.model
@@ -32,6 +40,7 @@ import kotlinx.serialization.Contextual
  * @param userAgent Raw User-Agent string captured when the session was created.
  * @param ipAddress IP address captured when the session was created.
  * @param activeOrganizationId Active organization pinned to this session (`org_id` claim on re-mint).
+ * @param impersonatedBy Platform user behind this session when it was established via impersonation; null for normal sign-ins.
  */
 @Serializable
 
@@ -71,7 +80,11 @@ data class UserSessionResponse (
 
     /* Active organization pinned to this session (`org_id` claim on re-mint). */
     @Contextual @SerialName(value = "activeOrganizationId")
-    val activeOrganizationId: java.util.UUID? = null
+    val activeOrganizationId: java.util.UUID? = null,
+
+    /* Platform user behind this session when it was established via impersonation; null for normal sign-ins. */
+    @Contextual @SerialName(value = "impersonatedBy")
+    val impersonatedBy: java.util.UUID? = null
 
 ) {
 

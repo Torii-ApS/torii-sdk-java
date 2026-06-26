@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.model
@@ -23,35 +31,30 @@ import kotlinx.serialization.Contextual
 /**
  * PATCH body for updating an end-user. Every field is tri-state: omit the key entirely to leave the field unchanged, send a non-null value to set it, or send JSON null to clear it.
  *
- * @param name New display name. Send null to clear; omit to leave unchanged.
- * @param phone New phone number. Send null to clear; omit to leave unchanged.
+ * @param firstName New first (given) name. Send null to clear; omit to leave unchanged.
+ * @param lastName New last (family) name. Send null to clear; omit to leave unchanged.
  * @param locale New preferred locale. Send null to clear; omit to leave unchanged.
- * @param address New postal address. Send null to clear; omit to leave unchanged.
- * @param dateOfBirth New date of birth (YYYY-MM-DD). Send null to clear; omit to leave unchanged.
+ * @param unsafeMetadata Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Merged result max 512 bytes.
  */
 @Serializable
 
 data class UpdateUserRequest (
 
-    /* New display name. Send null to clear; omit to leave unchanged. */
-    @SerialName(value = "name")
-    val name: kotlin.String? = null,
+    /* New first (given) name. Send null to clear; omit to leave unchanged. */
+    @SerialName(value = "firstName")
+    val firstName: kotlin.String? = null,
 
-    /* New phone number. Send null to clear; omit to leave unchanged. */
-    @SerialName(value = "phone")
-    val phone: kotlin.String? = null,
+    /* New last (family) name. Send null to clear; omit to leave unchanged. */
+    @SerialName(value = "lastName")
+    val lastName: kotlin.String? = null,
 
     /* New preferred locale. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "locale")
     val locale: UpdateUserRequest.Locale? = null,
 
-    /* New postal address. Send null to clear; omit to leave unchanged. */
-    @SerialName(value = "address")
-    val address: kotlin.String? = null,
-
-    /* New date of birth (YYYY-MM-DD). Send null to clear; omit to leave unchanged. */
-    @Contextual @SerialName(value = "dateOfBirth")
-    val dateOfBirth: java.time.LocalDate? = null
+    /* Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Merged result max 512 bytes. */
+    @Contextual @SerialName(value = "unsafeMetadata")
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>? = null
 
 ) {
 

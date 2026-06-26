@@ -8,14 +8,22 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.model
 
-import so.torii.backend.generated.model.UserResponse
+import so.torii.backend.generated.model.ServerUserResponse
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
@@ -30,11 +38,11 @@ import kotlinx.serialization.Contextual
  */
 @Serializable
 
-data class CursorPageResponseUserResponse (
+data class CursorPageResponseServerUserResponse (
 
     /* Items in this page, in stable order. */
     @SerialName(value = "items")
-    val items: kotlin.collections.List<UserResponse>,
+    val items: kotlin.collections.List<ServerUserResponse>,
 
     /* True if more pages are available (equivalent to `nextCursor != null`). */
     @SerialName(value = "hasMore")

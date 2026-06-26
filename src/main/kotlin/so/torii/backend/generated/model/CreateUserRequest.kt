@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package so.torii.backend.generated.model
@@ -23,16 +31,29 @@ import kotlinx.serialization.Contextual
 /**
  * Request body for creating an end-user in your environment. All fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
  *
+ * @param publicMetadata Initial public metadata (SDK-readable, server-written). Max 512 bytes.
+ * @param privateMetadata Initial private metadata (server-only). Max 4096 bytes.
+ * @param unsafeMetadata Initial unsafe metadata (end-user writable). Max 512 bytes.
  * @param email Primary email for the new user. If omitted, the user is created without a sign-in identity.
  * @param password Initial password. Subject to the environment's password policy. Omit to create a passwordless user (e.g. social-only).
- * @param name Display name to seed on the profile.
- * @param phone Phone number to seed on the profile.
- * @param address Postal address to seed on the profile.
- * @param dateOfBirth Date of birth in ISO-8601 (YYYY-MM-DD).
+ * @param firstName First (given) name to seed on the profile.
+ * @param lastName Last (family) name to seed on the profile.
  */
 @Serializable
 
 data class CreateUserRequest (
+
+    /* Initial public metadata (SDK-readable, server-written). Max 512 bytes. */
+    @Contextual @SerialName(value = "publicMetadata")
+    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+
+    /* Initial private metadata (server-only). Max 4096 bytes. */
+    @Contextual @SerialName(value = "privateMetadata")
+    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
+
+    /* Initial unsafe metadata (end-user writable). Max 512 bytes. */
+    @Contextual @SerialName(value = "unsafeMetadata")
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlin.Any>,
 
     /* Primary email for the new user. If omitted, the user is created without a sign-in identity. */
     @SerialName(value = "email")
@@ -42,21 +63,13 @@ data class CreateUserRequest (
     @SerialName(value = "password")
     val password: kotlin.String? = null,
 
-    /* Display name to seed on the profile. */
-    @SerialName(value = "name")
-    val name: kotlin.String? = null,
+    /* First (given) name to seed on the profile. */
+    @SerialName(value = "firstName")
+    val firstName: kotlin.String? = null,
 
-    /* Phone number to seed on the profile. */
-    @SerialName(value = "phone")
-    val phone: kotlin.String? = null,
-
-    /* Postal address to seed on the profile. */
-    @SerialName(value = "address")
-    val address: kotlin.String? = null,
-
-    /* Date of birth in ISO-8601 (YYYY-MM-DD). */
-    @Contextual @SerialName(value = "dateOfBirth")
-    val dateOfBirth: java.time.LocalDate? = null
+    /* Last (family) name to seed on the profile. */
+    @SerialName(value = "lastName")
+    val lastName: kotlin.String? = null
 
 ) {
 
