@@ -4,7 +4,6 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
-import java.time.LocalDate
 
 /**
  * Patches for [UsersClient.update]. Each field uses [PatchValue] so callers
@@ -14,17 +13,18 @@ import java.time.LocalDate
  *  - [PatchValue.Set] with a value          → update the field to that value
  *  - [PatchValue.Set] with `null`           → clear the field (server-side null)
  *
- * The inner `T` is nullable (`String?`, `LocalDate?`) precisely so `Set(null)`
- * is the canonical "clear" — matching the server-side Kotlin model where
- * `Included(null)` carries the same meaning. Java callers use the static
- * factory `PatchValue.set(value)`; passing `null` clears.
+ * The inner `T` is nullable (`String?`) precisely so `Set(null)` is the
+ * canonical "clear" — matching the server-side Kotlin model where
+ * `Included(null)` carries the same meaning. `unsafeMetadata` is tri-state too:
+ * omit to leave the server's metadata untouched (never clobbered), set a
+ * [JsonObject] to replace it, or `Set(null)` to clear. Java callers use the
+ * static factory `PatchValue.set(value)`; passing `null` clears.
  */
 public data class UpdateUserInput(
-    val name: PatchValue<String?> = PatchValue.NotIncluded,
-    val phone: PatchValue<String?> = PatchValue.NotIncluded,
+    val firstName: PatchValue<String?> = PatchValue.NotIncluded,
+    val lastName: PatchValue<String?> = PatchValue.NotIncluded,
     val locale: PatchValue<String?> = PatchValue.NotIncluded,
-    val address: PatchValue<String?> = PatchValue.NotIncluded,
-    val dateOfBirth: PatchValue<LocalDate?> = PatchValue.NotIncluded,
+    val unsafeMetadata: PatchValue<JsonObject?> = PatchValue.NotIncluded,
 )
 
 /**
@@ -40,11 +40,14 @@ public data class UpdateUserInput(
  * OpenAPI spec strips PatchValue's tri-state at the schema layer.
  */
 internal fun UpdateUserInput.toJsonObject(): JsonObject = buildJsonObject {
-    putPatch("name", name) { JsonPrimitive(it) }
-    putPatch("phone", phone) { JsonPrimitive(it) }
+    putPatch("firstName", firstName) { JsonPrimitive(it) }
+    putPatch("lastName", lastName) { JsonPrimitive(it) }
     putPatch("locale", locale) { JsonPrimitive(it) }
-    putPatch("address", address) { JsonPrimitive(it) }
-    putPatch("dateOfBirth", dateOfBirth) { JsonPrimitive(it.toString()) }
+    // unsafeMetadata is already a JsonObject; emit it (or null) directly.
+    when (val m = unsafeMetadata) {
+        is PatchValue.Set<JsonObject?> -> put("unsafeMetadata", m.value ?: JsonNull)
+        PatchValue.NotIncluded -> Unit
+    }
 }
 
 private inline fun <T : Any> kotlinx.serialization.json.JsonObjectBuilder.putPatch(

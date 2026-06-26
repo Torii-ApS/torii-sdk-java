@@ -10,9 +10,9 @@ package so.torii.backend
  *
  * ```kotlin
  * client.users.update(id, UpdateUserInput(
- *     name = PatchValue.Set("Ada"),   // -> {"name":"Ada"}    update
- *     phone = PatchValue.Set(null),   // -> {"phone":null}    clear
- *     // address omitted              // -> key not present    leave alone
+ *     firstName = PatchValue.Set("Ada"),  // -> {"firstName":"Ada"}  update
+ *     lastName = PatchValue.Set(null),    // -> {"lastName":null}    clear
+ *     // locale omitted                   // -> key not present      leave alone
  * ))
  * ```
  *

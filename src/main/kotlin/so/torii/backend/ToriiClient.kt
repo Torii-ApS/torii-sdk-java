@@ -16,9 +16,8 @@ import so.torii.backend.generated.infrastructure.ServerException
 import so.torii.backend.generated.api.ServerSessionsApi
 import so.torii.backend.generated.api.ServerUsersApi
 import so.torii.backend.generated.model.CreateUserRequest
+import so.torii.backend.generated.model.ServerUserResponse
 import so.torii.backend.generated.model.ServerUserSearchRequest
-import so.torii.backend.generated.model.UserResponse
-import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -172,14 +171,13 @@ public data class CreateUserInput
 @JvmOverloads
 constructor(
     val email: String? = null,
-    val name: String? = null,
-    val phone: String? = null,
     val password: String? = null,
-    val emailVerified: Boolean? = null,
-    val locale: String? = null,
-    val address: String? = null,
-    val dateOfBirth: LocalDate? = null,
-    val customClaims: Map<String, Any?>? = null,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    // Metadata bags — optional; default to empty {} on send (a new user has none to clobber).
+    val publicMetadata: Map<String, Any>? = null,
+    val privateMetadata: Map<String, Any>? = null,
+    val unsafeMetadata: Map<String, Any>? = null,
 )
 
 public class UsersClient internal constructor(
@@ -219,12 +217,13 @@ public class UsersClient internal constructor(
 
     public fun create(input: CreateUserInput): User {
         val body = CreateUserRequest(
+            publicMetadata = input.publicMetadata ?: emptyMap(),
+            privateMetadata = input.privateMetadata ?: emptyMap(),
+            unsafeMetadata = input.unsafeMetadata ?: emptyMap(),
             email = input.email,
             password = input.password,
-            name = input.name,
-            phone = input.phone,
-            address = input.address,
-            dateOfBirth = input.dateOfBirth,
+            firstName = input.firstName,
+            lastName = input.lastName,
         )
         return withApiErrorMapping("POST /api/server/v1/users") {
             runBlocking { api.createUser(body) }
@@ -255,7 +254,7 @@ public class UsersClient internal constructor(
             Triple(resp.code, resp.message, resp.body?.string().orEmpty())
         }
         if (status in 200..299) {
-            return patchJson.decodeFromString(UserResponse.serializer(), bodyText)
+            return patchJson.decodeFromString(ServerUserResponse.serializer(), bodyText)
         }
         throw mapApiException("PATCH $path", status, message, bodyText, cause = null)
     }
@@ -278,19 +277,19 @@ public class UsersClient internal constructor(
 }
 
 // JSON parser used to decode PATCH responses. Reuses the generated
-// kotlinx-serialization module so @Contextual fields (UUID, OffsetDateTime,
-// LocalDate) resolve.
+// kotlinx-serialization module so @Contextual fields (UUID, OffsetDateTime)
+// resolve.
 private val patchJson: Json = so.torii.backend.generated.infrastructure.Serializer.kotlinxSerializationJson
 
-// Map our public UserStatus (alias for UserResponse.Status) to the
+// Map our public UserStatus (alias for ServerUserResponse.Status) to the
 // generated search-request enum (a separate type with the same string
 // values).
 private fun mapStatusToSearch(
     status: UserStatus,
 ): ServerUserSearchRequest.Statuses = when (status) {
-    UserResponse.Status.ACTIVE -> ServerUserSearchRequest.Statuses.ACTIVE
-    UserResponse.Status.BANNED -> ServerUserSearchRequest.Statuses.BANNED
-    UserResponse.Status.DELETED -> ServerUserSearchRequest.Statuses.DELETED
+    ServerUserResponse.Status.ACTIVE -> ServerUserSearchRequest.Statuses.ACTIVE
+    ServerUserResponse.Status.BANNED -> ServerUserSearchRequest.Statuses.BANNED
+    ServerUserResponse.Status.DELETED -> ServerUserSearchRequest.Statuses.DELETED
 }
 
 // ---------------------------------------------------------------------------

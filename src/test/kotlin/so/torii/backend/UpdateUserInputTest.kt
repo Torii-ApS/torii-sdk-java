@@ -1,8 +1,9 @@
 package so.torii.backend
 
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 /**
  * Verifies [UpdateUserInput.toJsonObject] produces the exact wire body the
@@ -18,14 +19,14 @@ import java.time.LocalDate
 class UpdateUserInputTest {
     @Test
     fun `Set with value emits only the named key with that value`() {
-        val body = UpdateUserInput(name = PatchValue.Set("Ada")).toJsonObject().toString()
-        assertEquals("""{"name":"Ada"}""", body)
+        val body = UpdateUserInput(firstName = PatchValue.Set("Ada")).toJsonObject().toString()
+        assertEquals("""{"firstName":"Ada"}""", body)
     }
 
     @Test
     fun `Set with null emits the key with explicit null`() {
-        val body = UpdateUserInput(phone = PatchValue.Set(null)).toJsonObject().toString()
-        assertEquals("""{"phone":null}""", body)
+        val body = UpdateUserInput(lastName = PatchValue.Set(null)).toJsonObject().toString()
+        assertEquals("""{"lastName":null}""", body)
     }
 
     @Test
@@ -37,28 +38,36 @@ class UpdateUserInputTest {
     @Test
     fun `mixed Set value Set null and NotIncluded preserves intent`() {
         val body = UpdateUserInput(
-            name = PatchValue.Set("Ada"),
-            phone = PatchValue.Set(null),
-            address = PatchValue.NotIncluded,
+            firstName = PatchValue.Set("Ada"),
+            lastName = PatchValue.Set(null),
+            locale = PatchValue.NotIncluded,
         ).toJsonObject().toString()
-        assertEquals("""{"name":"Ada","phone":null}""", body)
+        assertEquals("""{"firstName":"Ada","lastName":null}""", body)
     }
 
     @Test
-    fun `dateOfBirth Set serialises as ISO date string`() {
+    fun `unsafeMetadata Set emits the bag as a JSON object`() {
         val body = UpdateUserInput(
-            dateOfBirth = PatchValue.Set(LocalDate.of(1815, 12, 10)),
+            unsafeMetadata = PatchValue.Set(JsonObject(mapOf("tier" to JsonPrimitive("pro")))),
         ).toJsonObject().toString()
-        assertEquals("""{"dateOfBirth":"1815-12-10"}""", body)
+        assertEquals("""{"unsafeMetadata":{"tier":"pro"}}""", body)
+    }
+
+    @Test
+    fun `unsafeMetadata Set null clears the bag`() {
+        val body = UpdateUserInput(
+            unsafeMetadata = PatchValue.Set(null),
+        ).toJsonObject().toString()
+        assertEquals("""{"unsafeMetadata":null}""", body)
     }
 
     @Test
     fun `Java-style static factories produce equivalent wire output`() {
         val body = UpdateUserInput(
-            name = PatchValue.set("Ada"),
-            phone = PatchValue.set(null),
-            address = PatchValue.omit(),
+            firstName = PatchValue.set("Ada"),
+            lastName = PatchValue.set(null),
+            locale = PatchValue.omit(),
         ).toJsonObject().toString()
-        assertEquals("""{"name":"Ada","phone":null}""", body)
+        assertEquals("""{"firstName":"Ada","lastName":null}""", body)
     }
 }
