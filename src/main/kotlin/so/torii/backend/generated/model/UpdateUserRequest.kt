@@ -42,11 +42,11 @@ data class UpdateUserRequest (
 
     /* New first (given) name. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "firstName")
-    val firstName: kotlin.String? = null,
+    val firstName: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded,
 
     /* New last (family) name. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "lastName")
-    val lastName: kotlin.String? = null,
+    val lastName: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded,
 
     /* New preferred locale. Send null to clear; omit to leave unchanged. */
     @SerialName(value = "locale")

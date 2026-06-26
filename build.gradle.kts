@@ -102,6 +102,37 @@ tasks.register<Sync>("regenerateOpenApi") {
             )
             if (patched != text) f.writeText(patched)
         }
+
+        // Tri-state PATCH/search fields: rewrite every nullable `String` request
+        // field to a tri-state `PatchValue<String?>` so callers can distinguish
+        // omit / clear / set. Combined with `encodeDefaults = false` (below), a
+        // field left at its `PatchValue.NotIncluded` default is dropped from the
+        // body (the "leave unchanged" wire state). Scoped to the request models
+        // that carry tri-state fields; generic within each (a new nullable-String
+        // field is converted automatically, no hand edits). Map/enum/date fields
+        // are left untouched (the regex only matches `kotlin.String?`).
+        val triStateModels = listOf("UpdateUserRequest.kt", "ServerUserSearchRequest.kt")
+        val nullableString = Regex("""val (\w+): kotlin\.String\? = null""")
+        triStateModels.forEach { name ->
+            val f = file("$generatedSourcesDir/model/$name")
+            if (f.exists()) {
+                val text = f.readText()
+                val patched = nullableString.replace(text) { m ->
+                    "val ${m.groupValues[1]}: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded"
+                }
+                if (patched != text) f.writeText(patched)
+            }
+        }
+
+        // Omit any field left at its default (PatchValue.NotIncluded or null) from
+        // request bodies — the omit half of the tri-state contract, and what keeps
+        // create/search/metadata bodies free of unset keys.
+        val serializerFile = file("$generatedSourcesDir/infrastructure/Serializer.kt")
+        if (serializerFile.exists()) {
+            val text = serializerFile.readText()
+            val patched = text.replace("encodeDefaults = true", "encodeDefaults = false")
+            if (patched != text) serializerFile.writeText(patched)
+        }
     }
 }
 

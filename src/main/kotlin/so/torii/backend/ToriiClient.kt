@@ -6,10 +6,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import so.torii.backend.generated.infrastructure.ClientException
 import so.torii.backend.generated.infrastructure.ServerException
@@ -70,7 +67,7 @@ public class ToriiClient internal constructor(
             val usersApi = ServerUsersApi(base, client)
             val sessionsApi = ServerSessionsApi(base, client)
             return ToriiClient(
-                users = UsersClient(usersApi, client, base),
+                users = UsersClient(usersApi),
                 sessions = SessionsClient(sessionsApi),
             )
         }
@@ -182,14 +179,16 @@ constructor(
 
 public class UsersClient internal constructor(
     private val api: ServerUsersApi,
-    private val httpClient: OkHttpClient,
-    private val baseUrl: String,
 ) {
     @JvmOverloads
     public fun list(options: ListUsersOptions = ListUsersOptions()): CursorPage<User> {
         val req = ServerUserSearchRequest(
-            name = options.name,
-            email = options.email,
+            // ListUsersOptions exposes name/email as plain String? (null = no filter);
+            // map onto the generated tri-state field (a value sets the filter, absent
+            // omits it). The "filter for users with no name" case is reachable by
+            // constructing ServerUserSearchRequest directly with PatchValue.Set(null).
+            name = options.name?.let { PatchValue.Set(it) } ?: PatchValue.NotIncluded,
+            email = options.email?.let { PatchValue.Set(it) } ?: PatchValue.NotIncluded,
             statuses = options.statuses?.mapTo(mutableSetOf()) { mapStatusToSearch(it) },
             createdAfter = options.createdAfter,
             createdBefore = options.createdBefore,
@@ -231,33 +230,18 @@ public class UsersClient internal constructor(
     }
 
     /**
-     * PATCH the user identified by [userId] with the supplied [patches].
+     * PATCH the user identified by [userId] with the supplied tri-state [request].
      *
-     * Builds the wire body directly from [UpdateUserInput] so tri-state
-     * semantics survive serialisation: [PatchValue.Set] emits the key with
-     * the value, [PatchValue.Clear] emits `"key": null`, and
-     * [PatchValue.NotIncluded] omits the key entirely.
-     *
-     * This intentionally bypasses the generated `UpdateUserRequest` DTO,
-     * which can only express two states (value vs `null`) and would
-     * therefore lose "leave alone" vs "clear" information.
+     * Routes through the generated client. The [UpdateUserRequest] model carries
+     * its tri-state fields as [PatchValue], so a field at its
+     * `PatchValue.NotIncluded` default is omitted (leave unchanged),
+     * `PatchValue.Set(value)` sets it, and `PatchValue.Set(null)` clears it. The
+     * generated `Serializer` (`encodeDefaults = false`) drops the omitted fields.
      */
-    public fun update(userId: UUID, patches: UpdateUserInput): User {
-        val bodyJson = patches.toJsonObject().toString()
-        val path = "/api/server/v1/users/$userId"
-        val request = Request.Builder()
-            .url("$baseUrl$path")
-            .header("Accept", "application/json")
-            .patch(bodyJson.toRequestBody("application/json".toMediaType()))
-            .build()
-        val (status, message, bodyText) = httpClient.newCall(request).execute().use { resp ->
-            Triple(resp.code, resp.message, resp.body?.string().orEmpty())
+    public fun update(userId: UUID, request: UpdateUserRequest): User =
+        withApiErrorMapping("PATCH /api/server/v1/users/$userId") {
+            runBlocking { api.updateUser(userId, request) }
         }
-        if (status in 200..299) {
-            return patchJson.decodeFromString(ServerUserResponse.serializer(), bodyText)
-        }
-        throw mapApiException("PATCH $path", status, message, bodyText, cause = null)
-    }
 
     public fun delete(userId: UUID) {
         withApiErrorMapping("DELETE /api/server/v1/users/$userId") {
@@ -275,11 +259,6 @@ public class UsersClient internal constructor(
             runBlocking { api.unbanUser(userId) }
         }
 }
-
-// JSON parser used to decode PATCH responses. Reuses the generated
-// kotlinx-serialization module so @Contextual fields (UUID, OffsetDateTime)
-// resolve.
-private val patchJson: Json = so.torii.backend.generated.infrastructure.Serializer.kotlinxSerializationJson
 
 // Map our public UserStatus (alias for ServerUserResponse.Status) to the
 // generated search-request enum (a separate type with the same string

@@ -43,11 +43,11 @@ data class ServerUserSearchRequest (
 
     /* Filter by name (case-insensitive substring match). Send null to require users with no name. */
     @SerialName(value = "name")
-    val name: kotlin.String? = null,
+    val name: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded,
 
     /* Filter by primary email (case-insensitive substring match). Send null to require users with no email. */
     @SerialName(value = "email")
-    val email: kotlin.String? = null,
+    val email: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded,
 
     /* Filter by user status. Returns users matching any of the supplied statuses. */
     @SerialName(value = "statuses")

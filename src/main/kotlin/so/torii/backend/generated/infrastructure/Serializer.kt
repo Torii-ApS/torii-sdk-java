@@ -55,7 +55,7 @@ object Serializer {
         isJsonInitialized = true
         Json {
             serializersModule = kotlinxSerializationAdapters
-            encodeDefaults = true
+            encodeDefaults = false
             ignoreUnknownKeys = true
             isLenient = true
 

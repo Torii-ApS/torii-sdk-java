@@ -57,8 +57,8 @@ class ClientAuthTest {
     }
 
     @Test
-    fun `hand-rolled PATCH sends the bearer token`() {
-        client().users.update(UUID.randomUUID(), UpdateUserInput(firstName = PatchValue.Set("Ada")))
+    fun `PATCH sends the bearer token`() {
+        client().users.update(UUID.randomUUID(), UpdateUserRequest(firstName = PatchValue.Set("Ada")))
         assertEquals("Bearer sk_test_abc", lastAuth.get())
     }
 }
