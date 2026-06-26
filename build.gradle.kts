@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
     id("org.openapi.generator") version "7.23.0"
     `java-library`
-    id("com.vanniktech.maven.publish") version "0.37.0"
+    id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 group = "so.torii"
