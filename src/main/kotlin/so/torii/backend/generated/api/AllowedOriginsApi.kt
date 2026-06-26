@@ -123,7 +123,7 @@ open class AllowedOriginsApi(basePath: kotlin.String = defaultBasePath, client: 
             path = "/api/server/v1/allowed-origins",
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -197,7 +197,7 @@ open class AllowedOriginsApi(basePath: kotlin.String = defaultBasePath, client: 
             path = "/api/server/v1/allowed-origins",
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }

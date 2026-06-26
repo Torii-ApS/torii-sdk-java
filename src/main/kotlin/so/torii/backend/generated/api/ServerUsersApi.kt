@@ -131,7 +131,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/{userId}/ban".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -205,7 +205,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users",
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -276,7 +276,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/{userId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -349,7 +349,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/{userId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -437,7 +437,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/search",
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -510,7 +510,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/{userId}/unban".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -587,7 +587,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/{userId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -664,7 +664,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
             path = "/api/server/v1/users/{userId}/metadata".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }

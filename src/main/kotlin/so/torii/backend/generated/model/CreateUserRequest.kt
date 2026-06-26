@@ -31,29 +31,17 @@ import kotlinx.serialization.Contextual
 /**
  * Request body for creating an end-user in your environment. All fields are optional; supply at minimum an email if you want the user to be able to sign in via email + password.
  *
- * @param publicMetadata Initial public metadata (SDK-readable, server-written). Max 512 bytes.
- * @param privateMetadata Initial private metadata (server-only). Max 4096 bytes.
- * @param unsafeMetadata Initial unsafe metadata (end-user writable). Max 512 bytes.
  * @param email Primary email for the new user. If omitted, the user is created without a sign-in identity.
  * @param password Initial password. Subject to the environment's password policy. Omit to create a passwordless user (e.g. social-only).
  * @param firstName First (given) name to seed on the profile.
  * @param lastName Last (family) name to seed on the profile.
+ * @param publicMetadata Initial public metadata (SDK-readable, server-written). Max 512 bytes.
+ * @param privateMetadata Initial private metadata (server-only). Max 4096 bytes.
+ * @param unsafeMetadata Initial unsafe metadata (end-user writable). Max 512 bytes.
  */
 @Serializable
 
 data class CreateUserRequest (
-
-    /* Initial public metadata (SDK-readable, server-written). Max 512 bytes. */
-    @Contextual @SerialName(value = "publicMetadata")
-    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
-
-    /* Initial private metadata (server-only). Max 4096 bytes. */
-    @Contextual @SerialName(value = "privateMetadata")
-    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
-
-    /* Initial unsafe metadata (end-user writable). Max 512 bytes. */
-    @Contextual @SerialName(value = "unsafeMetadata")
-    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>,
 
     /* Primary email for the new user. If omitted, the user is created without a sign-in identity. */
     @SerialName(value = "email")
@@ -69,7 +57,19 @@ data class CreateUserRequest (
 
     /* Last (family) name to seed on the profile. */
     @SerialName(value = "lastName")
-    val lastName: kotlin.String? = null
+    val lastName: kotlin.String? = null,
+
+    /* Initial public metadata (SDK-readable, server-written). Max 512 bytes. */
+    @Contextual @SerialName(value = "publicMetadata")
+    val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
+
+    /* Initial private metadata (server-only). Max 4096 bytes. */
+    @Contextual @SerialName(value = "privateMetadata")
+    val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
+
+    /* Initial unsafe metadata (end-user writable). Max 512 bytes. */
+    @Contextual @SerialName(value = "unsafeMetadata")
+    val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
 
 ) {
 

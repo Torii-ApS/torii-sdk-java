@@ -126,7 +126,7 @@ open class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: 
             path = "/api/server/v1/users/{userId}/sessions".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -197,7 +197,7 @@ open class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: 
             path = "/api/server/v1/users/{userId}/sessions".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
@@ -271,7 +271,7 @@ open class ServerSessionsApi(basePath: kotlin.String = defaultBasePath, client: 
             path = "/api/server/v1/users/{userId}/sessions/{sessionId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())).replace("{"+"sessionId"+"}", encodeURIComponent(sessionId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
-            requiresAuthentication = false,
+            requiresAuthentication = true,
             body = localVariableBody
         )
     }
