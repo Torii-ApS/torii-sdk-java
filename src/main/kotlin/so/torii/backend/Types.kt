@@ -13,6 +13,14 @@ public typealias UserLocale = ServerUserResponse.Locale
 public typealias Session = UserSessionResponse
 
 /**
+ * Tri-state PATCH body for [UsersClient.update], re-exported from the generated
+ * package. Its nullable `String` fields are [PatchValue]: `PatchValue.Set(v)`
+ * sets, `PatchValue.Set(null)` clears, and leaving a field at its
+ * `PatchValue.NotIncluded` default omits it (server leaves it unchanged).
+ */
+public typealias UpdateUserRequest = so.torii.backend.generated.model.UpdateUserRequest
+
+/**
  * Cursor-paginated page of items. `nextCursor` is non-null when [hasMore]
  * is true.
  */
