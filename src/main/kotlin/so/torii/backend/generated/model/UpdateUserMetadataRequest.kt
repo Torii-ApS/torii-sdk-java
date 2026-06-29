@@ -31,23 +31,23 @@ import kotlinx.serialization.Contextual
 /**
  * PATCH body for a user's metadata bags. Each bag is tri-state: omit to leave it unchanged, or send an object value. Whether the object merges into or replaces the bag depends on the endpoint (see its operation description).
  *
- * @param publicMetadata Public metadata bag: SDK-readable, server-written. Max 512 bytes.
- * @param privateMetadata Private metadata bag: server-only, never exposed to the SDK or in a JWT. Max 4096 bytes.
- * @param unsafeMetadata Unsafe metadata bag: readable and writable by the end-user via the SDK. Max 512 bytes.
+ * @param publicMetadata Public metadata bag: SDK-readable, server-written. Part of the 8 KB combined metadata budget.
+ * @param privateMetadata Private metadata bag: server-only, never exposed to the SDK or in a JWT. Part of the 8 KB combined metadata budget.
+ * @param unsafeMetadata Unsafe metadata bag: readable and writable by the end-user via the SDK. Part of the 8 KB combined metadata budget.
  */
 @Serializable
 
 data class UpdateUserMetadataRequest (
 
-    /* Public metadata bag: SDK-readable, server-written. Max 512 bytes. */
+    /* Public metadata bag: SDK-readable, server-written. Part of the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "publicMetadata")
     val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
 
-    /* Private metadata bag: server-only, never exposed to the SDK or in a JWT. Max 4096 bytes. */
+    /* Private metadata bag: server-only, never exposed to the SDK or in a JWT. Part of the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "privateMetadata")
     val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
 
-    /* Unsafe metadata bag: readable and writable by the end-user via the SDK. Max 512 bytes. */
+    /* Unsafe metadata bag: readable and writable by the end-user via the SDK. Part of the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "unsafeMetadata")
     val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
 
