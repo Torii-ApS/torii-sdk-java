@@ -29,10 +29,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Contextual
 
 /**
- * Optional filter body for `POST /users/search`. Every field is tri-state: omit to skip that filter, send a value to require it. Fields whose inner type is nullable (currently `name`, `email`) additionally accept JSON null to filter for users where that column is null; the non-nullable `statuses` field rejects null.
+ * Optional filter body for `POST /users/search`. Every field is tri-state: omit to skip that filter, send a value to apply it. The three id-selectors (`userIds`, `emailAddresses`, `email`) resolve users to a set of ids and, when more than one is supplied, are combined with AND (intersection); a supplied id-selector whose resolved set is empty returns an empty page. `name` additionally accepts JSON null to match users with no name; an explicit null or blank `email` contributes no restriction; the non-nullable `statuses` field rejects null.
  *
  * @param name Filter by name (case-insensitive substring match). Send null to require users with no name.
- * @param email Filter by primary email (case-insensitive substring match). Send null to require users with no email.
+ * @param userIds Restrict to these user ids (the explicit batch-by-id lookup), at most 100. AND-combined with the other id-selectors; an empty list returns an empty page.
+ * @param emailAddresses Resolve users by exact (case-insensitive) email address (one or more, at most 100). Unlike `email`, never matches a superstring. AND-combined with the other id-selectors; an empty list, or addresses matching nobody, returns an empty page.
+ * @param email Filter by primary email (case-insensitive substring match). AND-combined with the other id-selectors. An explicit null or blank value contributes no restriction.
  * @param statuses Filter by user status. Returns users matching any of the supplied statuses.
  * @param createdAfter Only return users created at or after this instant (ISO-8601 UTC).
  * @param createdBefore Only return users created at or before this instant (ISO-8601 UTC).
@@ -45,7 +47,15 @@ data class ServerUserSearchRequest (
     @SerialName(value = "name")
     val name: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded,
 
-    /* Filter by primary email (case-insensitive substring match). Send null to require users with no email. */
+    /* Restrict to these user ids (the explicit batch-by-id lookup), at most 100. AND-combined with the other id-selectors; an empty list returns an empty page. */
+    @SerialName(value = "userIds")
+    val userIds: kotlin.collections.List<@Contextual java.util.UUID>? = null,
+
+    /* Resolve users by exact (case-insensitive) email address (one or more, at most 100). Unlike `email`, never matches a superstring. AND-combined with the other id-selectors; an empty list, or addresses matching nobody, returns an empty page. */
+    @SerialName(value = "emailAddresses")
+    val emailAddresses: kotlin.collections.List<kotlin.String>? = null,
+
+    /* Filter by primary email (case-insensitive substring match). AND-combined with the other id-selectors. An explicit null or blank value contributes no restriction. */
     @SerialName(value = "email")
     val email: so.torii.backend.PatchValue<kotlin.String?> = so.torii.backend.PatchValue.NotIncluded,
 

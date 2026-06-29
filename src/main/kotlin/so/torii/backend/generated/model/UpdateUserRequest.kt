@@ -34,7 +34,7 @@ import kotlinx.serialization.Contextual
  * @param firstName New first (given) name. Send null to clear; omit to leave unchanged.
  * @param lastName New last (family) name. Send null to clear; omit to leave unchanged.
  * @param locale New preferred locale. Send null to clear; omit to leave unchanged.
- * @param unsafeMetadata Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Merged result max 512 bytes.
+ * @param unsafeMetadata Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Counts toward the 8 KB combined metadata budget.
  */
 @Serializable
 
@@ -52,7 +52,7 @@ data class UpdateUserRequest (
     @SerialName(value = "locale")
     val locale: UpdateUserRequest.Locale? = null,
 
-    /* Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Merged result max 512 bytes. */
+    /* Deep-merges into the user's unsafe metadata (a key set to null removes it); omit to leave unchanged. Counts toward the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "unsafeMetadata")
     val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
 

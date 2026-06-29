@@ -35,9 +35,9 @@ import kotlinx.serialization.Contextual
  * @param password Initial password. Subject to the environment's password policy. Omit to create a passwordless user (e.g. social-only).
  * @param firstName First (given) name to seed on the profile.
  * @param lastName Last (family) name to seed on the profile.
- * @param publicMetadata Initial public metadata (SDK-readable, server-written). Max 512 bytes.
- * @param privateMetadata Initial private metadata (server-only). Max 4096 bytes.
- * @param unsafeMetadata Initial unsafe metadata (end-user writable). Max 512 bytes.
+ * @param publicMetadata Initial public metadata (SDK-readable, server-written). Part of the 8 KB combined metadata budget.
+ * @param privateMetadata Initial private metadata (server-only). Part of the 8 KB combined metadata budget.
+ * @param unsafeMetadata Initial unsafe metadata (end-user writable). Part of the 8 KB combined metadata budget.
  */
 @Serializable
 
@@ -59,15 +59,15 @@ data class CreateUserRequest (
     @SerialName(value = "lastName")
     val lastName: kotlin.String? = null,
 
-    /* Initial public metadata (SDK-readable, server-written). Max 512 bytes. */
+    /* Initial public metadata (SDK-readable, server-written). Part of the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "publicMetadata")
     val publicMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
 
-    /* Initial private metadata (server-only). Max 4096 bytes. */
+    /* Initial private metadata (server-only). Part of the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "privateMetadata")
     val privateMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null,
 
-    /* Initial unsafe metadata (end-user writable). Max 512 bytes. */
+    /* Initial unsafe metadata (end-user writable). Part of the 8 KB combined metadata budget. */
     @Contextual @SerialName(value = "unsafeMetadata")
     val unsafeMetadata: kotlin.collections.Map<kotlin.String, kotlinx.serialization.json.JsonElement>? = null
 
