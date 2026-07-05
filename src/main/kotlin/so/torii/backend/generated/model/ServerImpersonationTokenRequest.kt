@@ -33,7 +33,8 @@ import kotlinx.serialization.Contextual
  *
  * @param actorUserId The principal the impersonation is on behalf of (recorded for accountability). Must be a user in this environment.
  * @param reason Mandatory justification (GDPR purpose limitation); recorded in the audit log on mint and redeem.
- * @param expiresInSeconds Optional token lifetime in seconds, 60..600. Omit for the 60s default.
+ * @param redirectUrl Optional post-redeem landing URL for the `url` redeem link; its origin must be in the environment's allowed origins. Omit to default to the environment's first non-wildcard allowed origin.
+ * @param expiresInSeconds Optional token lifetime in seconds, 60..600. Omit for the 600s default.
  */
 @Serializable
 
@@ -47,7 +48,11 @@ data class ServerImpersonationTokenRequest (
     @SerialName(value = "reason")
     val reason: kotlin.String,
 
-    /* Optional token lifetime in seconds, 60..600. Omit for the 60s default. */
+    /* Optional post-redeem landing URL for the `url` redeem link; its origin must be in the environment's allowed origins. Omit to default to the environment's first non-wildcard allowed origin. */
+    @SerialName(value = "redirectUrl")
+    val redirectUrl: kotlin.String? = null,
+
+    /* Optional token lifetime in seconds, 60..600. Omit for the 600s default. */
     @SerialName(value = "expiresInSeconds")
     val expiresInSeconds: kotlin.Long? = null
 
