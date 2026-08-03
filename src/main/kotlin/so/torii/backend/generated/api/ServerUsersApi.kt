@@ -28,6 +28,7 @@ import okhttp3.Call
 import okhttp3.HttpUrl
 
 import so.torii.backend.generated.model.CreateUserRequest
+import so.torii.backend.generated.model.CursorPageResponseServerUserOrganizationResponse
 import so.torii.backend.generated.model.CursorPageResponseServerUserResponse
 import so.torii.backend.generated.model.ProblemDetail
 import so.torii.backend.generated.model.ServerUserResponse
@@ -347,6 +348,93 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
         return RequestConfig(
             method = RequestMethod.GET,
             path = "/api/server/v1/users/{userId}".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = true,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * GET /api/server/v1/users/{userId}/organizations
+     * List a user&#39;s organizations
+     * Returns a cursor-paginated page of the organizations this user is a member of, with the user&#39;s role in each and that membership&#39;s metadata bags. The mirror image of listing an organization&#39;s members. Note the bags are the MEMBERSHIP&#39;s, not the organization&#39;s: read the organization itself for those.
+     * @param userId Identifier of the user whose organizations to list.
+     * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
+     * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
+     * @return CursorPageResponseServerUserOrganizationResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun listUserOrganizations(userId: java.util.UUID, limit: kotlin.Int? = 20, cursor: java.util.UUID? = null) : CursorPageResponseServerUserOrganizationResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = listUserOrganizationsWithHttpInfo(userId = userId, limit = limit, cursor = cursor)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as CursorPageResponseServerUserOrganizationResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * GET /api/server/v1/users/{userId}/organizations
+     * List a user&#39;s organizations
+     * Returns a cursor-paginated page of the organizations this user is a member of, with the user&#39;s role in each and that membership&#39;s metadata bags. The mirror image of listing an organization&#39;s members. Note the bags are the MEMBERSHIP&#39;s, not the organization&#39;s: read the organization itself for those.
+     * @param userId Identifier of the user whose organizations to list.
+     * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
+     * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
+     * @return ApiResponse<CursorPageResponseServerUserOrganizationResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun listUserOrganizationsWithHttpInfo(userId: java.util.UUID, limit: kotlin.Int?, cursor: java.util.UUID?) : ApiResponse<CursorPageResponseServerUserOrganizationResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = listUserOrganizationsRequestConfig(userId = userId, limit = limit, cursor = cursor)
+
+        return@withContext request<Unit, CursorPageResponseServerUserOrganizationResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation listUserOrganizations
+     *
+     * @param userId Identifier of the user whose organizations to list.
+     * @param limit Maximum number of items in the returned page (default 20). (optional, default to 20)
+     * @param cursor Opaque cursor returned by the previous page&#39;s &#x60;nextCursor&#x60;. Omit to fetch the first page. (optional)
+     * @return RequestConfig
+     */
+    fun listUserOrganizationsRequestConfig(userId: java.util.UUID, limit: kotlin.Int?, cursor: java.util.UUID?) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery: MultiValueMap = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
+            .apply {
+                if (limit != null) {
+                    put("limit", listOf(limit.toString()))
+                }
+                if (cursor != null) {
+                    put("cursor", listOf(cursor.toString()))
+                }
+            }
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
+
+        return RequestConfig(
+            method = RequestMethod.GET,
+            path = "/api/server/v1/users/{userId}/organizations".replace("{"+"userId"+"}", encodeURIComponent(userId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
             requiresAuthentication = true,

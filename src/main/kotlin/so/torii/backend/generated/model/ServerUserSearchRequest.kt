@@ -38,6 +38,7 @@ import kotlinx.serialization.Contextual
  * @param statuses Filter by user status. Returns users matching any of the supplied statuses.
  * @param createdAfter Only return users created at or after this instant (ISO-8601 UTC).
  * @param createdBefore Only return users created at or before this instant (ISO-8601 UTC).
+ * @param organizationId Only return members of this organization. An organization from another environment matches nobody. Not an id-selector: it is applied as a membership semi-join, so it is never capped and always ANDs with the rest of the filters.
  */
 @Serializable
 
@@ -69,7 +70,11 @@ data class ServerUserSearchRequest (
 
     /* Only return users created at or before this instant (ISO-8601 UTC). */
     @Contextual @SerialName(value = "createdBefore")
-    val createdBefore: java.time.OffsetDateTime? = null
+    val createdBefore: java.time.OffsetDateTime? = null,
+
+    /* Only return members of this organization. An organization from another environment matches nobody. Not an id-selector: it is applied as a membership semi-join, so it is never capped and always ANDs with the rest of the filters. */
+    @Contextual @SerialName(value = "organizationId")
+    val organizationId: java.util.UUID? = null
 
 ) {
 
