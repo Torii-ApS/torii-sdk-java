@@ -54,7 +54,7 @@ open class AllowedOriginsApi(basePath: kotlin.String = defaultBasePath, client: 
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.torii.so")
+            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.toriiauth.eu")
         }
     }
 

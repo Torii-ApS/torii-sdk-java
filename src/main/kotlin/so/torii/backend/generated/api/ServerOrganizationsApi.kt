@@ -58,7 +58,7 @@ open class ServerOrganizationsApi(basePath: kotlin.String = defaultBasePath, cli
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.torii.so")
+            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.toriiauth.eu")
         }
     }
 
