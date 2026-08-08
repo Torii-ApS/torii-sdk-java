@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "so.torii"
-version = "0.0.11"
+version = "0.0.12"
 
 repositories {
     mavenCentral()
