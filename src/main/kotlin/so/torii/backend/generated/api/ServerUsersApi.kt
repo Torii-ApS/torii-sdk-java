@@ -60,7 +60,7 @@ open class ServerUsersApi(basePath: kotlin.String = defaultBasePath, client: Cal
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.torii.so")
+            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.toriiauth.eu")
         }
     }
 

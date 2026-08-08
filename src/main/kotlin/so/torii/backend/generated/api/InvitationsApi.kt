@@ -30,6 +30,7 @@ import okhttp3.HttpUrl
 import so.torii.backend.generated.model.CreateEnvironmentInvitationServerRequest
 import so.torii.backend.generated.model.CursorPageResponseEnvironmentInvitationResponse
 import so.torii.backend.generated.model.EnvironmentInvitationResponse
+import so.torii.backend.generated.model.ProblemDetail
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -55,7 +56,7 @@ open class InvitationsApi(basePath: kotlin.String = defaultBasePath, client: Cal
     companion object {
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.torii.so")
+            System.getProperties().getProperty(ApiClient.BASE_URL_KEY, "https://api.toriiauth.eu")
         }
     }
 
@@ -121,7 +122,7 @@ open class InvitationsApi(basePath: kotlin.String = defaultBasePath, client: Cal
         val localVariableQuery: MultiValueMap = mutableMapOf()
         val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
         localVariableHeaders["Content-Type"] = "application/json"
-        localVariableHeaders["Accept"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
 
         return RequestConfig(
             method = RequestMethod.POST,
