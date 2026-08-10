@@ -29,8 +29,10 @@ import okhttp3.HttpUrl
 
 import so.torii.backend.generated.model.CreateEnvironmentInvitationServerRequest
 import so.torii.backend.generated.model.CursorPageResponseEnvironmentInvitationResponse
+import so.torii.backend.generated.model.EnvironmentInvitationDetailResponse
 import so.torii.backend.generated.model.EnvironmentInvitationResponse
 import so.torii.backend.generated.model.ProblemDetail
+import so.torii.backend.generated.model.UpdateEnvironmentInvitationMetadataRequest
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -136,10 +138,10 @@ open class InvitationsApi(basePath: kotlin.String = defaultBasePath, client: Cal
 
     /**
      * GET /api/server/v1/invitations/{invitationId}
-     * Get an invitation by id
+     * Get an invitation by id, including both metadata bags
      * 
      * @param invitationId 
-     * @return EnvironmentInvitationResponse
+     * @return EnvironmentInvitationDetailResponse
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -148,11 +150,11 @@ open class InvitationsApi(basePath: kotlin.String = defaultBasePath, client: Cal
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    suspend fun get(invitationId: java.util.UUID) : EnvironmentInvitationResponse = withContext(Dispatchers.IO) {
+    suspend fun get(invitationId: java.util.UUID) : EnvironmentInvitationDetailResponse = withContext(Dispatchers.IO) {
         val localVarResponse = getWithHttpInfo(invitationId = invitationId)
 
         return@withContext when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as EnvironmentInvitationResponse
+            ResponseType.Success -> (localVarResponse as Success<*>).data as EnvironmentInvitationDetailResponse
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -168,19 +170,19 @@ open class InvitationsApi(basePath: kotlin.String = defaultBasePath, client: Cal
 
     /**
      * GET /api/server/v1/invitations/{invitationId}
-     * Get an invitation by id
+     * Get an invitation by id, including both metadata bags
      * 
      * @param invitationId 
-     * @return ApiResponse<EnvironmentInvitationResponse?>
+     * @return ApiResponse<EnvironmentInvitationDetailResponse?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    suspend fun getWithHttpInfo(invitationId: java.util.UUID) : ApiResponse<EnvironmentInvitationResponse?> = withContext(Dispatchers.IO) {
+    suspend fun getWithHttpInfo(invitationId: java.util.UUID) : ApiResponse<EnvironmentInvitationDetailResponse?> = withContext(Dispatchers.IO) {
         val localVariableConfig = getRequestConfig(invitationId = invitationId)
 
-        return@withContext request<Unit, EnvironmentInvitationResponse>(
+        return@withContext request<Unit, EnvironmentInvitationDetailResponse>(
             localVariableConfig
         )
     }
@@ -438,6 +440,83 @@ open class InvitationsApi(basePath: kotlin.String = defaultBasePath, client: Cal
         
         return RequestConfig(
             method = RequestMethod.DELETE,
+            path = "/api/server/v1/invitations/{invitationId}".replace("{"+"invitationId"+"}", encodeURIComponent(invitationId.toString())),
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = true,
+            body = localVariableBody
+        )
+    }
+
+    /**
+     * PATCH /api/server/v1/invitations/{invitationId}
+     * Deep-merge metadata into a pending invitation
+     * 
+     * @param invitationId 
+     * @param updateEnvironmentInvitationMetadataRequest 
+     * @return EnvironmentInvitationDetailResponse
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     * @throws UnsupportedOperationException If the API returns an informational or redirection response
+     * @throws ClientException If the API returns a client error response
+     * @throws ServerException If the API returns a server error response
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
+    suspend fun updateMetadata(invitationId: java.util.UUID, updateEnvironmentInvitationMetadataRequest: UpdateEnvironmentInvitationMetadataRequest) : EnvironmentInvitationDetailResponse = withContext(Dispatchers.IO) {
+        val localVarResponse = updateMetadataWithHttpInfo(invitationId = invitationId, updateEnvironmentInvitationMetadataRequest = updateEnvironmentInvitationMetadataRequest)
+
+        return@withContext when (localVarResponse.responseType) {
+            ResponseType.Success -> (localVarResponse as Success<*>).data as EnvironmentInvitationDetailResponse
+            ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
+            ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
+            ResponseType.ClientError -> {
+                val localVarError = localVarResponse as ClientError<*>
+                throw ClientException("Client error : ${localVarError.statusCode} ${localVarError.message.orEmpty()}", localVarError.statusCode, localVarResponse)
+            }
+            ResponseType.ServerError -> {
+                val localVarError = localVarResponse as ServerError<*>
+                throw ServerException("Server error : ${localVarError.statusCode} ${localVarError.message.orEmpty()} ${localVarError.body}", localVarError.statusCode, localVarResponse)
+            }
+        }
+    }
+
+    /**
+     * PATCH /api/server/v1/invitations/{invitationId}
+     * Deep-merge metadata into a pending invitation
+     * 
+     * @param invitationId 
+     * @param updateEnvironmentInvitationMetadataRequest 
+     * @return ApiResponse<EnvironmentInvitationDetailResponse?>
+     * @throws IllegalStateException If the request is not correctly configured
+     * @throws IOException Rethrows the OkHttp execute method exception
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(IllegalStateException::class, IOException::class)
+    suspend fun updateMetadataWithHttpInfo(invitationId: java.util.UUID, updateEnvironmentInvitationMetadataRequest: UpdateEnvironmentInvitationMetadataRequest) : ApiResponse<EnvironmentInvitationDetailResponse?> = withContext(Dispatchers.IO) {
+        val localVariableConfig = updateMetadataRequestConfig(invitationId = invitationId, updateEnvironmentInvitationMetadataRequest = updateEnvironmentInvitationMetadataRequest)
+
+        return@withContext request<UpdateEnvironmentInvitationMetadataRequest, EnvironmentInvitationDetailResponse>(
+            localVariableConfig
+        )
+    }
+
+    /**
+     * To obtain the request config of the operation updateMetadata
+     *
+     * @param invitationId 
+     * @param updateEnvironmentInvitationMetadataRequest 
+     * @return RequestConfig
+     */
+    fun updateMetadataRequestConfig(invitationId: java.util.UUID, updateEnvironmentInvitationMetadataRequest: UpdateEnvironmentInvitationMetadataRequest) : RequestConfig<UpdateEnvironmentInvitationMetadataRequest> {
+        val localVariableBody = updateEnvironmentInvitationMetadataRequest
+        val localVariableQuery: MultiValueMap = mutableMapOf()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Content-Type"] = "application/json"
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
+
+        return RequestConfig(
+            method = RequestMethod.PATCH,
             path = "/api/server/v1/invitations/{invitationId}".replace("{"+"invitationId"+"}", encodeURIComponent(invitationId.toString())),
             query = localVariableQuery,
             headers = localVariableHeaders,
